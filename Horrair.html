@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Planning RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f5f3;
+  --surface: #ffffff;
+  --surface2: #f0efed;
+  --surface3: #e6e4e0;
+  --border: #dbd9d4;
+  --border2: #c0bdb6;
+  --text: #1a1917;
+  --text2: #5a5751;
+  --text3: #9a9690;
+  --green: #16703a;
+  --green-light: #e6f4ec;
+  --green-border: #93c9aa;
+  --amber: #a85c08;
+  --amber-light: #fef4e0;
+  --amber-border: #f0b845;
+  --red: #b01c1c;
+  --red-light: #fdf0f0;
+  --red-border: #f0a0a0;
+  --purple: #6525d0;
+  --purple-light: #f3effe;
+  --purple-border: #c0a8f5;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.11), 0 2px 6px rgba(0,0,0,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+/* ══ HEADER ══ */
+.header {
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: var(--shadow); min-height: 60px;
+}
+.logo { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--text); white-space: nowrap; }
+.logo span { color: var(--green); }
+.header-right { display: flex; gap: 10px; align-items: center; }
+
+/* ══ BOUTONS ══ */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 17px; border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; border: 1.5px solid transparent;
+  transition: all 0.14s; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-primary:hover { background: #125f31; }
+.btn-outline { background: transparent; color: var(--text2); border-color: var(--border2); }
+.btn-outline:hover { background: var(--surface2); color: var(--text); }
+
+/* ══ DROPDOWN ══ */
+.dropdown { position: relative; }
+.dropdown-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border2);
+  background: var(--surface); color: var(--text);
+  transition: all 0.14s; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.dropdown-toggle:hover { background: var(--surface2); border-color: var(--text3); }
+.dropdown-toggle:active { transform: scale(0.97); }
+.dd-arrow { font-size: 0.58rem; color: var(--text3); transition: transform 0.18s; }
+.dropdown.open .dd-arrow { transform: rotate(180deg); }
+.dropdown-menu {
+  position: absolute; top: calc(100% + 7px); right: 0;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-md);
+  min-width: 225px; z-index: 300; overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-8px) scale(0.97); transform-origin: top right;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.dropdown.open .dropdown-menu { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+.dd-section { font-size: 0.59rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); font-weight: 700; padding: 9px 16px 4px; }
+.dd-sep { height: 1px; background: var(--border); margin: 4px 0; }
+.dd-item {
+  display: flex; align-items: center; gap: 11px; padding: 11px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 500;
+  color: var(--text); cursor: pointer; border: none; background: none;
+  width: 100%; text-align: left; transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dd-item:hover { background: var(--surface2); }
+.dd-item:active { background: var(--surface3); }
+.dd-icon { font-size: 1rem; width: 22px; text-align: center; flex-shrink: 0; }
+.dd-texts { flex: 1; }
+.dd-label { display: block; }
+.dd-sub { display: block; font-size: 0.67rem; color: var(--text3); margin-top: 1px; }
+.dd-item.danger { color: var(--red); }
+.dd-item.danger:hover { background: var(--red-light); }
+
+/* ══ STATS ══ */
+.stats-bar {
+  display: flex; background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  overflow-x: auto;
+}
+.stat { flex: 1; padding: 13px 20px; border-right: 1px solid var(--border); min-width: 110px; }
+.stat:last-child { border-right: none; }
+.stat-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 700; margin-bottom: 3px; white-space: nowrap; }
+.stat-val { font-family: 'DM Serif Display', serif; font-size: 1.5rem; line-height: 1.1; color: var(--text); }
+.val-ok { color: var(--green); }
+.val-warn { color: var(--amber); }
+.val-danger { color: var(--red); }
+
+/* ══ LOG ══ */
+.log-bar {
+  padding: 6px 24px; background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+  font-size: 0.7rem; color: var(--text3); min-height: 30px;
+}
+.log-entry { display: flex; align-items: center; gap: 5px; }
+.log-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.dot-ok { background: var(--green); }
+.dot-warn { background: var(--amber); }
+.dot-danger { background: var(--red); }
+
+/* ══ TABLEAU ══ */
+.table-wrap { padding: 20px 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+table {
+  width: 100%; min-width: 940px;
+  border-collapse: separate; border-spacing: 0;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: var(--shadow); font-size: 0.82rem;
+}
+thead th {
+  background: var(--surface2); padding: 13px 8px;
+  text-align: center; font-size: 0.65rem; letter-spacing: 0.9px;
+  text-transform: uppercase; color: var(--text2); font-weight: 700;
+  border-bottom: 2px solid var(--border); white-space: nowrap;
+}
+thead th.col-name { text-align: left; padding-left: 46px; min-width: 190px; }
+thead th.col-sat { color: var(--green); }
+thead th.col-sun { color: var(--amber); }
+thead th.col-total { background: var(--surface3); }
+thead th.col-del { width: 46px; background: var(--surface3); }
+
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #fafaf8; }
+tbody tr.drag-over { background: var(--green-light) !important; outline: 2px dashed var(--green-border); outline-offset: -2px; }
+tbody tr.dragging { opacity: 0.35; }
+
+td { padding: 6px 5px; text-align: center; vertical-align: middle; }
+td.col-name {
+  text-align: left; padding-left: 0;
+  font-weight: 600; font-size: 0.84rem; color: var(--text);
+  white-space: nowrap; border-right: 1px solid var(--border);
+}
+td.col-total { background: #fafaf8; border-left: 1px solid var(--border); font-weight: 700; }
+td.col-del { background: #fafaf8; border-left: 1px solid var(--border); padding: 4px; }
+
+.name-cell { display: flex; align-items: center; gap: 2px; padding-right: 8px; }
+.drag-handle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 38px; cursor: grab; color: #ccc;
+  font-size: 1rem; flex-shrink: 0; border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+  letter-spacing: -2px;
+}
+.drag-handle:hover { color: var(--text3); background: var(--surface2); }
+.drag-handle:active { cursor: grabbing; color: var(--green); }
+.emp-name-txt { flex: 1; }
+.fixed-badge {
+  font-size: 0.55rem; background: var(--purple-light);
+  border: 1px solid var(--purple-border); color: var(--purple);
+  padding: 1px 5px; border-radius: 3px; margin-left: 5px; flex-shrink: 0;
+}
+
+/* ══ SELECT ══ */
+.sel-wrap { position: relative; }
+.sel-wrap::after {
+  content: '▾'; position: absolute; right: 5px; top: 50%;
+  transform: translateY(-50%); font-size: 0.55rem; color: var(--text3); pointer-events: none;
+}
+select {
+  width: 100%; min-width: 102px;
+  padding: 7px 18px 7px 7px;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 5px; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 0.73rem; font-weight: 500;
+  cursor: pointer; outline: none;
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+select:focus { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-light); }
+select.s-repos { background: var(--surface2); color: var(--text3); }
+select.s-work  { background: var(--green-light); border-color: var(--green-border); color: var(--green); }
+select.s-sun   { background: var(--amber-light); border-color: var(--amber-border); color: var(--amber); }
+select.s-locked{ background: var(--purple-light) !important; border-color: var(--purple-border) !important; color: var(--purple) !important; pointer-events: none; }
+select option  { background: #fff; color: #1a1917; }
+
+/* ══ CHIPS ══ */
+.chip { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+.chip-ok    { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+.chip-under { background: var(--red-light);   color: var(--red);   border: 1px solid var(--red-border); }
+.chip-over  { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
+.chip-zero  { background: var(--surface2);    color: var(--text3); border: 1px solid var(--border); }
+
+/* ══ TFOOT ══ */
+tfoot td {
+  background: var(--surface2); border-top: 2px solid var(--border2);
+  padding: 10px 6px; font-size: 0.7rem; color: var(--text2); font-weight: 600;
+}
+tfoot td.col-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); padding-left: 46px; border-right: 1px solid var(--border); }
+tfoot td.col-total { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--green); border-left: 1px solid var(--border); }
+.foot-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.foot-h { font-weight: 700; }
+.foot-cnt { font-size: 0.58rem; }
+.foot-cnt.ok { color: var(--green); }
+.foot-cnt.warn { color: var(--amber); }
+
+/* ══ BOUTON SUPPR EMPLOYÉ ══ */
+.btn-del {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 5px;
+  border: 1px solid var(--red-border); background: none; color: var(--red);
+  cursor: pointer; font-size: 0.78rem; transition: all 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-del:hover { background: var(--red-light); }
+.btn-del:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* ══ BARRE AJOUT ══ */
+.add-bar {
+  display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;
+  padding: 14px 24px;
+  background: var(--surface); border-top: 1.5px solid var(--border);
+  box-shadow: 0 -1px 5px rgba(0,0,0,0.04);
+}
+.add-field { display: flex; flex-direction: column; gap: 4px; }
+.add-field label { font-size: 0.68rem; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+.add-field input {
+  padding: 8px 11px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem; color: var(--text); background: var(--bg); outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s; -webkit-appearance: none;
+}
+.add-field input:focus { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-light); }
+.inp-name { width: 200px; }
+.inp-num  { width: 72px; text-align: center; }
+.fixed-wrap { display: flex; align-items: center; gap: 6px; padding-bottom: 9px; }
+.fixed-wrap input[type=checkbox] { accent-color: var(--purple); width: 15px; height: 15px; cursor: pointer; }
+.fixed-wrap label { font-size: 0.76rem; color: var(--text2); cursor: pointer; }
+
+/* ══ MODAL ══ */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+  z-index: 400; display: flex; align-items: center; justify-content: center;
+  padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 24px; width: 100%; max-width: 480px;
+  max-height: 88vh; overflow-y: auto;
+  transform: translateY(16px) scale(0.98); transition: transform 0.2s;
+  box-shadow: var(--shadow-md);
+}
+.modal-backdrop.open .modal { transform: translateY(0) scale(1); }
+.modal-title {
+  font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text);
+  margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;
+}
+.modal-close { cursor: pointer; color: var(--text3); font-size: 1rem; padding: 4px 7px; border-radius: 4px; border: none; background: none; transition: all 0.1s; }
+.modal-close:hover { color: var(--red); background: var(--red-light); }
+.modal-sub { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); font-weight: 700; margin-bottom: 10px; }
+.modal-sep { height: 1px; background: var(--border); margin: 16px 0; }
+.shift-hdr { display: flex; gap: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.shift-hdr span { font-size: 0.6rem; color: var(--text3); font-weight: 700; text-transform: uppercase; }
+.shift-hdr span:nth-child(1) { flex: 2; }
+.shift-hdr span:nth-child(2) { flex: 1; text-align: center; }
+.shift-hdr span:nth-child(3) { width: 44px; text-align: center; }
+.shift-hdr span:nth-child(4) { width: 28px; }
+.shift-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.shift-item:last-child { border-bottom: none; }
+.si-name { flex: 2; padding: 6px 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 5px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text); outline: none; }
+.si-name:focus, .si-h:focus { border-color: var(--green); }
+.si-h { flex: 1; padding: 6px 8px; text-align: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: 5px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text); outline: none; }
+.si-sun { width: 44px; text-align: center; accent-color: var(--amber); cursor: pointer; }
+.si-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 0.85rem; padding: 3px 6px; border-radius: 4px; transition: all 0.1s; }
+.si-del:hover { color: var(--red); background: var(--red-light); }
+
+/* ══ OVERLAY / TOAST ══ */
+.overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.82);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 14px;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.overlay.active { display: flex; }
+.spinner { width: 34px; height: 34px; border: 3px solid var(--border2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.overlay-msg { font-size: 0.85rem; color: var(--text2); font-weight: 600; }
+.toast {
+  position: fixed; bottom: 20px; right: 20px; background: var(--text); color: #fff;
+  padding: 11px 18px; border-radius: var(--radius); font-size: 0.81rem; font-weight: 500;
+  box-shadow: var(--shadow-md); opacity: 0; transform: translateY(12px);
+  transition: all 0.2s; pointer-events: none; z-index: 600; max-width: 340px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.t-ok { background: var(--green); }
+.toast.t-err { background: var(--red); }
+.toast.t-warn { background: var(--amber); }
+.empty-row td { text-align: center; padding: 50px; color: var(--text3); font-size: 0.88rem; }
+
+/* ══ PRINT ══ */
+@media print {
+  .header .header-right, .add-bar, .log-bar, .toast, .overlay, .modal-backdrop,
+  td.col-del, thead th.col-del { display: none !important; }
+  body { background: #fff; }
+  table { box-shadow: none !important; border: 1.5px solid #ccc !important; }
+  thead th { background: #f0f0f0 !important; color: #333 !important; position: static !important; }
+  select { border: none !important; background: transparent !important; -webkit-appearance: none; pointer-events: none; }
+  .sel-wrap::after, .drag-handle { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Planning <span>RH</span></div>
+  <div class="header-right">
+    <button class="btn btn-primary" onclick="runGenerate()">⚡ Générer</button>
+    <div class="dropdown" id="main-dd">
+      <button class="dropdown-toggle" onclick="toggleDD()">⚙ Actions <span class="dd-arrow">▾</span></button>
+      <div class="dropdown-menu">
+        <div class="dd-section">Planning</div>
+        <button class="dd-item" onclick="ddDo('unlock')">
+          <span class="dd-icon" id="dd-lock-icon">🔒</span>
+          <span class="dd-texts"><span class="dd-label" id="dd-lock-label">Débloquer fixes</span><span class="dd-sub">Horaires verrouillés</span></span>
+        </button>
+        <button class="dd-item" onclick="ddDo('horaires')">
+          <span class="dd-icon">🕐</span>
+          <span class="dd-texts"><span class="dd-label">Gérer les créneaux</span><span class="dd-sub">Ajouter / modifier / supprimer</span></span>
+        </button>
+        <div class="dd-sep"></div>
+        <div class="dd-section">Export</div>
+        <button class="dd-item" onclick="ddDo('csv')">
+          <span class="dd-icon">📄</span>
+          <span class="dd-texts"><span class="dd-label">Exporter CSV</span><span class="dd-sub">Télécharger le planning</span></span>
+        </button>
+        <button class="dd-item" onclick="ddDo('print')">
+          <span class="dd-icon">🖨</span>
+          <span class="dd-texts"><span class="dd-label">Imprimer</span><span class="dd-sub">Version imprimable</span></span>
+        </button>
+        <div class="dd-sep"></div>
+        <button class="dd-item danger" onclick="ddDo('reset')">
+          <span class="dd-icon">↺</span>
+          <span class="dd-texts"><span class="dd-label">Réinitialiser</span><span class="dd-sub">Effacer le planning</span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-label">Total heures</div><div class="stat-val" id="st-total">0 h</div></div>
+  <div class="stat"><div class="stat-label">Objectif</div><div class="stat-val">300 h</div></div>
+  <div class="stat"><div class="stat-label">Écart</div><div class="stat-val" id="st-diff">–</div></div>
+  <div class="stat"><div class="stat-label">Employés</div><div class="stat-val" id="st-emp">–</div></div>
+  <div class="stat"><div class="stat-label">Contraintes</div><div class="stat-val" id="st-constr">–</div></div>
+</div>
+
+<!-- LOG -->
+<div class="log-bar" id="log-bar">
+  <div class="log-entry"><div class="log-dot dot-ok"></div><span>Prêt — appuyez sur ⚡ Générer.</span></div>
+</div>
+
+<!-- TABLEAU -->
+<div class="table-wrap">
+  <table id="main-table">
+    <thead>
+      <tr>
+        <th class="col-name">Employé</th>
+        <th>Lundi</th><th>Mardi</th><th>Mercredi</th><th>Jeudi</th><th>Vendredi</th>
+        <th class="col-sat">Samedi</th>
+        <th class="col-sun">Dim. ☀</th>
+        <th class="col-total">Total</th>
+        <th class="col-del"></th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <tr class="empty-row"><td colspan="10">Aucun employé — ajoutez-en ci-dessous puis cliquez ⚡ Générer</td></tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="col-name">Total / jour</td>
+        <td id="fd0">–</td><td id="fd1">–</td><td id="fd2">–</td>
+        <td id="fd3">–</td><td id="fd4">–</td><td id="fd5">–</td>
+        <td id="fd6">–</td>
+        <td class="col-total" id="fd-grand">–</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- BARRE AJOUT EMPLOYÉ -->
+<div class="add-bar">
+  <div class="add-field">
+    <label>Nom complet</label>
+    <input class="inp-name" id="inp-name" type="text" placeholder="Ex : Marie Dupont" maxlength="40" autocomplete="off">
+  </div>
+  <div class="add-field">
+    <label>Min h/sem</label>
+    <input class="inp-num" id="inp-min" type="number" min="0" max="60" value="15">
+  </div>
+  <div class="add-field">
+    <label>Max h/sem</label>
+    <input class="inp-num" id="inp-max" type="number" min="0" max="60" value="38">
+  </div>
+  <div class="fixed-wrap">
+    <input type="checkbox" id="inp-fixed">
+    <label for="inp-fixed">Horaire fixe (Lun–Sam 6h–12h)</label>
+  </div>
+  <button class="btn btn-primary" onclick="addEmployee()">+ Ajouter</button>
+</div>
+
+<!-- MODAL CRÉNEAUX -->
+<div class="modal-backdrop" id="modal-horaires" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>🕐 Gestion des créneaux</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-sub">Créneaux disponibles</div>
+    <p style="font-size:0.72rem;color:var(--text3);margin-bottom:12px">Modifiez librement. ☀ = autorisé le dimanche.</p>
+    <div class="shift-hdr"><span>Libellé</span><span>Heures</span><span>☀ Dim.</span><span></span></div>
+    <div id="shifts-list"></div>
+    <button class="btn btn-outline" style="width:100%;margin-top:12px;justify-content:center" onclick="addShiftRow()">+ Ajouter un créneau</button>
+    <div class="modal-sep"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveShifts()">✓ Sauvegarder</button>
+  </div>
+</div>
+
+<!-- OVERLAY / TOAST -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="overlay-msg" id="overlay-msg">Génération en cours…</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════
+const CFG = {
+  TARGET:300, TARGET_MIN:280, TARGET_MAX:320,
+  MAX_DAY:6, SAT_EXACT:5, SUN_EXACT:6,
+  MAX_CONSEC:6, MAX_SHIFT:2, MIN_WORKDAYS:5, PASSES:800,
+};
+const SAT=5, SUN=6;
+
+let SHIFTS_DATA = [
+  {label:'REPOS',     h:0, sunOk:true },
+  {label:'6h–12h',    h:6, sunOk:true },
+  {label:'8h–14h15',  h:6, sunOk:true },
+  {label:'8h–17h15',  h:8, sunOk:true },
+  {label:'10h–16h15', h:6, sunOk:true },
+  {label:'10h–19h15', h:8, sunOk:false},
+  {label:'14h–19h15', h:5, sunOk:false},
+];
+
+let EMPLOYEES = [
+  {name:'Jean-Yves',     minH:35,maxH:38,fixed:true },
+  {name:'Elisa',         minH:25,maxH:25,fixed:false},
+  {name:'Marianne',      minH:20,maxH:20,fixed:false},
+  {name:'Aurélie',       minH:30,maxH:30,fixed:false},
+  {name:'Jérémy',        minH:30,maxH:30,fixed:false},
+  {name:'David',         minH:15,maxH:38,fixed:false},
+  {name:'Jérôme',        minH:15,maxH:38,fixed:false},
+  {name:'Fiona',         minH:15,maxH:38,fixed:false},
+  {name:'Axel',          minH:15,maxH:38,fixed:false},
+  {name:'Nathan',        minH:15,maxH:38,fixed:false},
+  {name:'Alexandre',     minH:15,maxH:38,fixed:false},
+  {name:'Ophélie',       minH:15,maxH:38,fixed:false},
+  {name:'Mylan',         minH:35,maxH:38,fixed:true },
+  {name:'Richard Stage', minH:15,maxH:38,fixed:false},
+];
+
+const SUN_KEY_NAMES=['Jérôme','Aurélie','David','Marianne','Elisa'];
+let grid=[], fixesUnlocked=false, logs=[];
+
+// ── Helpers shifts ──
+const getH    =(lbl)=>{ const s=SHIFTS_DATA.find(x=>x.label===lbl); return s?s.h:0; };
+const allKeys =()=>SHIFTS_DATA.map(s=>s.label);
+const workKeys=()=>SHIFTS_DATA.filter(s=>s.label!=='REPOS').map(s=>s.label);
+const sunKeys =()=>SHIFTS_DATA.filter(s=>s.label!=='REPOS'&&s.sunOk).map(s=>s.label);
+
+// ── Helpers grille ──
+const empH   =(ei)=>grid[ei]?grid[ei].reduce((s,c)=>s+getH(c.shift),0):0;
+const empDays=(ei)=>grid[ei]?grid[ei].filter(c=>c.shift!=='REPOS').length:0;
+const totalH =()=>EMPLOYEES.reduce((s,_,ei)=>s+empH(ei),0);
+const dayCnt =(di)=>EMPLOYEES.filter((_,ei)=>grid[ei]&&grid[ei][di].shift!=='REPOS').length;
+const shiftCnt=(di,sk)=>EMPLOYEES.filter((_,ei)=>grid[ei]&&grid[ei][di].shift===sk).length;
+const dayLim =(di)=>di===SAT?CFG.SAT_EXACT:di===SUN?CFG.SUN_EXACT:CFG.MAX_DAY;
+const sunIdx =()=>SUN_KEY_NAMES.map(n=>EMPLOYEES.findIndex(e=>e.name===n)).filter(i=>i>=0);
+
+function maxConsec(ei){
+  let mx=0,cur=0;
+  for(let d=0;d<7;d++){grid[ei][d].shift!=='REPOS'?(cur++,mx=Math.max(mx,cur)):cur=0;}
+  return mx;
+}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+function sortByH(arr){return[...arr].sort((a,b)=>empH(a)-empH(b));}
+
+// ══════════════════════════════════
+//  GÉNÉRATION
+// ══════════════════════════════════
+function buildFixed(){
+  const fs={};
+  EMPLOYEES.forEach((e,ei)=>{if(e.fixed)fs[ei]={0:'6h–12h',1:'6h–12h',2:'6h–12h',3:'6h–12h',4:'6h–12h',5:'6h–12h',6:'REPOS'};});
+  return fs;
+}
+function initGrid(){
+  const fs=buildFixed();
+  grid=EMPLOYEES.map((_,ei)=>
+    Array.from({length:7},(_,di)=>({shift:fs[ei]?.[di]??'REPOS',locked:(fs[ei]?.[di]!=null)&&!fixesUnlocked}))
+  );
+}
+function runGenerate(){
+  if(!EMPLOYEES.length){showToast('Ajoutez des employés d\'abord.','err');return;}
+  showOverlay('Génération en cours…');
+  setTimeout(()=>{
+    try{generate();renderTable();updateStats();}
+    catch(e){console.error(e);showToast('Erreur : '+e.message,'err');}
+    hideOverlay();
+  },60);
+}
+function generate(){
+  logs=[];initGrid();
+  const n=EMPLOYEES.length;
+  // Dimanche clés
+  shuffle(sunIdx()).forEach(ei=>{
+    if(grid[ei][SUN].locked)return;
+    const pool=sunKeys().filter(sk=>shiftCnt(SUN,sk)<CFG.MAX_SHIFT&&dayCnt(SUN)<CFG.SUN_EXACT);
+    if(pool.length)grid[ei][SUN]={shift:pool[Math.floor(Math.random()*pool.length)],locked:false};
+  });
+  let sl=CFG.SUN_EXACT-dayCnt(SUN);
+  shuffle([...Array(n).keys()].filter(ei=>!grid[ei][SUN].locked&&grid[ei][SUN].shift==='REPOS')).forEach(ei=>{
+    if(sl<=0)return;
+    const sk=sunKeys().find(s=>shiftCnt(SUN,s)<CFG.MAX_SHIFT);
+    if(sk){grid[ei][SUN]={shift:sk,locked:false};sl--;}
+  });
+  // Samedi
+  let sal=CFG.SAT_EXACT-dayCnt(SAT);
+  shuffle(sortByH([...Array(n).keys()].filter(ei=>!grid[ei][SAT].locked))).forEach(ei=>{
+    if(sal<=0)return;
+    const pool=workKeys().filter(sk=>shiftCnt(SAT,sk)<CFG.MAX_SHIFT);
+    if(pool.length){grid[ei][SAT]={shift:pool[Math.floor(Math.random()*pool.length)],locked:false};sal--;}
+  });
+  // Lun-Ven
+  [0,1,2,3,4].forEach(di=>{
+    const needed=Math.min(CFG.MAX_DAY,Math.ceil(n*0.7));
+    let cnt=dayCnt(di);
+    shuffle(sortByH([...Array(n).keys()].filter(ei=>!grid[ei][di].locked&&grid[ei][di].shift==='REPOS'))).forEach(ei=>{
+      if(cnt>=needed||cnt>=CFG.MAX_DAY)return;
+      const pool=workKeys().filter(sk=>shiftCnt(di,sk)<CFG.MAX_SHIFT);
+      if(pool.length){grid[ei][di]={shift:pool[Math.floor(Math.random()*pool.length)],locked:false};cnt++;}
+    });
+  });
+  // Optimisation
+  for(let p=0;p<CFG.PASSES;p++){
+    if(totalH()>=CFG.TARGET_MIN&&totalH()<=CFG.TARGET_MAX&&checkV()===0)break;
+    const ei=Math.floor(Math.random()*n),di=Math.floor(Math.random()*7);
+    if(grid[ei][di].locked)continue;
+    const old=grid[ei][di].shift,emp=EMPLOYEES[ei],r=Math.random();
+    let nw=old;
+    if(r<0.33&&old==='REPOS'&&dayCnt(di)<dayLim(di)){
+      const pool=(di===SUN?sunKeys():workKeys()).filter(sk=>shiftCnt(di,sk)<CFG.MAX_SHIFT&&getH(sk)+empH(ei)<=emp.maxH);
+      if(pool.length)nw=pool[Math.floor(Math.random()*pool.length)];
+    }else if(r<0.66&&old!=='REPOS'){
+      if(empH(ei)>emp.maxH||totalH()>CFG.TARGET_MAX&&empH(ei)>emp.minH)nw='REPOS';
+    }else if(old!=='REPOS'){
+      const pool=(di===SUN?sunKeys():workKeys()).filter(sk=>sk!==old&&shiftCnt(di,sk)<CFG.MAX_SHIFT);
+      if(pool.length)nw=pool[Math.floor(Math.random()*pool.length)];
+    }
+    if(nw===old)continue;
+    grid[ei][di]={shift:nw,locked:false};
+    if(maxConsec(ei)>CFG.MAX_CONSEC||(nw==='REPOS'&&empH(ei)<emp.minH))grid[ei][di]={shift:old,locked:false};
+  }
+  // Min jours
+  EMPLOYEES.forEach((_,ei)=>{
+    let wd=empDays(ei);if(wd>=CFG.MIN_WORKDAYS)return;
+    shuffle([0,1,2,3,4,SAT,SUN].filter(di=>grid[ei][di].shift==='REPOS'&&!grid[ei][di].locked)).forEach(di=>{
+      if(wd>=CFG.MIN_WORKDAYS||dayCnt(di)>=dayLim(di))return;
+      const pool=(di===SUN?sunKeys():workKeys()).filter(sk=>shiftCnt(di,sk)<CFG.MAX_SHIFT);
+      if(pool.length){grid[ei][di]={shift:pool[Math.floor(Math.random()*pool.length)],locked:false};wd++;}
+    });
+  });
+  const t=totalH();
+  logs.push({msg:`Total ${t}h (objectif ${CFG.TARGET}h)`,type:t>=CFG.TARGET_MIN&&t<=CFG.TARGET_MAX?'ok':'warn'});
+  const v=checkV();
+  logs.push({msg:v?`${v} contrainte(s) non respectée(s)`:'Toutes les contraintes OK',type:v?'warn':'ok'});
+  renderLogs();
+}
+function checkV(){
+  return EMPLOYEES.reduce((s,e,ei)=>{
+    let v=0;const h=empH(ei);
+    if(h<e.minH||h>e.maxH)v++;
+    if(empDays(ei)<CFG.MIN_WORKDAYS)v++;
+    if(maxConsec(ei)>CFG.MAX_CONSEC)v++;
+    return s+v;
+  },0);
+}
+
+// ══════════════════════════════════
+//  RENDU
+// ══════════════════════════════════
+function renderTable(){
+  const tbody=document.getElementById('table-body');
+  tbody.innerHTML='';
+  if(!EMPLOYEES.length){
+    tbody.innerHTML='<tr class="empty-row"><td colspan="10">Aucun employé — ajoutez-en ci-dessous.</td></tr>';
+    return;
+  }
+  const ak=allKeys();
+  EMPLOYEES.forEach((emp,ei)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.ei=ei; tr.draggable=true;
+    // drag events
+    tr.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(ei));tr.classList.add('dragging');});
+    tr.addEventListener('dragend',()=>{document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('dragging','drag-over'));});
+    tr.addEventListener('dragover',e=>{e.preventDefault();tr.classList.add('drag-over');});
+    tr.addEventListener('dragleave',()=>tr.classList.remove('drag-over'));
+    tr.addEventListener('drop',e=>{
+      e.preventDefault();tr.classList.remove('drag-over');
+      const from=parseInt(e.dataTransfer.getData('text/plain'));
+      const to=parseInt(tr.dataset.ei);
+      if(from!==to)moveEmp(from,to);
+    });
+    // nom
+    const tdN=document.createElement('td');tdN.className='col-name';
+    tdN.innerHTML=`<div class="name-cell"><span class="drag-handle" title="Glisser pour réorganiser">⋮⋮</span><span class="emp-name-txt">${emp.name}${emp.fixed?'<span class="fixed-badge">fixe</span>':''}</span></div>`;
+    tr.appendChild(tdN);
+    // jours
+    for(let di=0;di<7;di++){
+      const td=document.createElement('td');
+      const cell=grid[ei]?.[di]??{shift:'REPOS',locked:false};
+      const wrap=document.createElement('div');wrap.className='sel-wrap';
+      const validK=di===SUN?['REPOS',...sunKeys()]:ak;
+      const sel=document.createElement('select');
+      sel.dataset.ei=ei;sel.dataset.di=di;
+      const setClass=(sk)=>{
+        sel.className=cell.locked?'s-locked':sk==='REPOS'?'s-repos':di===SUN?'s-sun':'s-work';
+      };
+      validK.forEach(sk=>{
+        const o=document.createElement('option');o.value=sk;o.textContent=sk;
+        if(sk===cell.shift)o.selected=true;sel.appendChild(o);
+      });
+      setClass(cell.shift);
+      if(cell.locked)sel.disabled=true;
+      sel.addEventListener('change',function(){
+        if(grid[ei])grid[ei][di]={shift:this.value,locked:false};
+        setClass(this.value);updateStats();
+        // Mettre à jour chip total de cette ligne
+        const chipTd=this.closest('tr').querySelector('.col-total');
+        if(chipTd){const h=empH(ei);const cls=h===0?'chip-zero':h<emp.minH?'chip-under':h>emp.maxH?'chip-over':'chip-ok';chipTd.innerHTML=`<span class="chip ${cls}">${h}h</span>`;}
+      });
+      wrap.appendChild(sel);td.appendChild(wrap);tr.appendChild(td);
+    }
+    // total
+    const tdT=document.createElement('td');tdT.className='col-total';
+    const h=empH(ei);
+    const cc=h===0?'chip-zero':h<emp.minH?'chip-under':h>emp.maxH?'chip-over':'chip-ok';
+    tdT.innerHTML=`<span class="chip ${cc}">${h}h</span>`;tr.appendChild(tdT);
+    // supprimer
+    const tdD=document.createElement('td');tdD.className='col-del';
+    const btn=document.createElement('button');btn.className='btn-del';btn.title='Supprimer';btn.textContent='✕';
+    btn.disabled=EMPLOYEES.length<=1;
+    btn.onclick=()=>removeEmployee(ei);
+    tdD.appendChild(btn);tr.appendChild(tdD);
+    tbody.appendChild(tr);
+  });
+  renderFooter();
+}
+
+function renderFooter(){
+  const t=totalH();
+  document.getElementById('fd-grand').textContent=t?t+'h':'–';
+  for(let di=0;di<7;di++){
+    const fd=document.getElementById('fd'+di);if(!fd)continue;
+    if(!EMPLOYEES.length||!grid.length){fd.textContent='–';continue;}
+    const cnt=dayCnt(di),lim=dayLim(di);
+    const ok=(di===SAT||di===SUN)?cnt===lim:cnt>=2;
+    const h=EMPLOYEES.reduce((s,_,ei)=>s+(grid[ei]?getH(grid[ei][di].shift):0),0);
+    fd.innerHTML=`<div class="foot-inner"><span class="foot-h">${h}h</span><span class="foot-cnt ${ok?'ok':'warn'}">${cnt}/${lim}</span></div>`;
+  }
+}
+
+function updateStats(){
+  const t=totalH();
+  document.getElementById('st-total').textContent=t+'h';
+  const diff=t-CFG.TARGET;
+  const el=document.getElementById('st-diff');
+  el.textContent=(diff>=0?'+':'')+diff+'h';
+  el.className='stat-val '+(Math.abs(diff)<=20?'val-ok':diff<0?'val-danger':'val-warn');
+  document.getElementById('st-emp').textContent=EMPLOYEES.length;
+  const v=EMPLOYEES.length&&grid.length?checkV():0;
+  const cel=document.getElementById('st-constr');
+  cel.textContent=v===0?'✓ OK':v+' ⚠';
+  cel.className='stat-val '+(v===0?'val-ok':'val-warn');
+  renderFooter();
+}
+
+function renderLogs(){
+  const bar=document.getElementById('log-bar');bar.innerHTML='';
+  logs.forEach(l=>{
+    const d=document.createElement('div');d.className='log-entry';
+    const dot=document.createElement('div');dot.className='log-dot dot-'+l.type;
+    const s=document.createElement('span');s.textContent=l.msg;
+    d.appendChild(dot);d.appendChild(s);bar.appendChild(d);
+  });
+}
+
+// ══════════════════════════════════
+//  DRAG & DROP RÉORGANISATION
+// ══════════════════════════════════
+function moveEmp(fromEi,toEi){
+  const [emp]=EMPLOYEES.splice(fromEi,1);
+  EMPLOYEES.splice(toEi,0,emp);
+  if(grid.length){
+    const [row]=grid.splice(fromEi,1);
+    grid.splice(toEi,0,row);
+  }
+  renderTable();updateStats();
+  showToast(`${emp.name} déplacé.`);
+}
+
+// ══════════════════════════════════
+//  GESTION EMPLOYÉS
+// ══════════════════════════════════
+function addEmployee(){
+  const name=document.getElementById('inp-name').value.trim();
+  if(!name){showToast('Entrez un nom.','err');return;}
+  if(EMPLOYEES.find(e=>e.name.toLowerCase()===name.toLowerCase())){showToast('Employé déjà présent.','warn');return;}
+  const minH=parseInt(document.getElementById('inp-min').value)||15;
+  const maxH=parseInt(document.getElementById('inp-max').value)||38;
+  const fixed=document.getElementById('inp-fixed').checked;
+  if(minH>maxH){showToast('Min > Max !','err');return;}
+  EMPLOYEES.push({name,minH,maxH,fixed});
+  if(grid.length){
+    const ei=EMPLOYEES.length-1;
+    const fs=buildFixed();
+    grid.push(Array.from({length:7},(_,di)=>({shift:fs[ei]?.[di]??'REPOS',locked:(fs[ei]?.[di]!=null)&&!fixesUnlocked})));
+  }
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-fixed').checked=false;
+  renderTable();updateStats();
+  showToast(`${name} ajouté !`,'ok');
+}
+
+function removeEmployee(i){
+  if(EMPLOYEES.length<=1){showToast('Au moins 1 employé requis.','warn');return;}
+  const name=EMPLOYEES[i].name;
+  EMPLOYEES.splice(i,1);
+  if(grid.length)grid.splice(i,1);
+  renderTable();updateStats();
+  showToast(`${name} supprimé.`,'ok');
+}
+
+// ══════════════════════════════════
+//  MODAL CRÉNEAUX
+// ══════════════════════════════════
+function openModal(){renderShiftsList();document.getElementById('modal-horaires').classList.add('open');}
+function closeModal(){document.getElementById('modal-horaires').classList.remove('open');}
+function renderShiftsList(){
+  const list=document.getElementById('shifts-list');list.innerHTML='';
+  SHIFTS_DATA.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='shift-item';
+    const isR=s.label==='REPOS';
+    d.innerHTML=`
+      <input class="si-name" type="text" value="${s.label}" ${isR?'disabled':''} placeholder="Libellé">
+      <input class="si-h" type="number" value="${s.h}" min="0" max="12" step="0.5" ${isR?'disabled':''}>
+      <input type="checkbox" class="si-sun" ${s.sunOk?'checked':''} ${isR?'disabled':''} title="Autorisé dimanche">
+      <button class="si-del" onclick="delShift(${i})" ${isR?'disabled style="opacity:.3"':''}>✕</button>`;
+    list.appendChild(d);
+  });
+}
+function addShiftRow(){SHIFTS_DATA.push({label:'Nouveau',h:6,sunOk:false});renderShiftsList();}
+function delShift(i){
+  if(SHIFTS_DATA[i].label==='REPOS'){showToast('REPOS ne peut pas être supprimé.','warn');return;}
+  SHIFTS_DATA.splice(i,1);renderShiftsList();
+}
+function saveShifts(){
+  const items=document.querySelectorAll('#shifts-list .shift-item');
+  const nd=[];let ok=true;
+  items.forEach(it=>{
+    const lbl=it.querySelector('.si-name').value.trim();
+    const h=parseFloat(it.querySelector('.si-h').value)||0;
+    const sun=it.querySelector('.si-sun').checked;
+    if(!lbl){ok=false;return;}
+    nd.push({label:lbl,h,sunOk:sun});
+  });
+  if(!ok){showToast('Libellé manquant.','err');return;}
+  if(!nd.find(s=>s.label==='REPOS'))nd.unshift({label:'REPOS',h:0,sunOk:true});
+  SHIFTS_DATA=nd;grid=[];
+  closeModal();renderTable();updateStats();
+  showToast('Créneaux sauvegardés. Regénérez le planning.','ok');
+}
+
+// ══════════════════════════════════
+//  DROPDOWN / ACTIONS
+// ══════════════════════════════════
+function toggleDD(){document.getElementById('main-dd').classList.toggle('open');}
+document.addEventListener('click',e=>{const dd=document.getElementById('main-dd');if(!dd.contains(e.target))dd.classList.remove('open');});
+function ddDo(a){
+  document.getElementById('main-dd').classList.remove('open');
+  if(a==='unlock')toggleUnlock();
+  else if(a==='horaires')openModal();
+  else if(a==='csv')exportCSV();
+  else if(a==='print')window.print();
+  else if(a==='reset')resetPlanning();
+}
+function toggleUnlock(){
+  fixesUnlocked=!fixesUnlocked;
+  document.getElementById('dd-lock-icon').textContent=fixesUnlocked?'🔓':'🔒';
+  document.getElementById('dd-lock-label').textContent=fixesUnlocked?'Bloquer fixes':'Débloquer fixes';
+  if(grid.length)renderTable();
+  showToast(fixesUnlocked?'Horaires fixes débloqués.':'Horaires fixes verrouillés.');
+}
+function resetPlanning(){
+  grid=[];logs=[{msg:'Planning réinitialisé.',type:'ok'}];
+  renderLogs();renderTable();updateStats();
+  for(let di=0;di<7;di++){const fd=document.getElementById('fd'+di);if(fd)fd.textContent='–';}
+  document.getElementById('fd-grand').textContent='–';
+  document.getElementById('st-total').textContent='0 h';
+  document.getElementById('st-diff').textContent='–';
+  showToast('Planning réinitialisé.');
+}
+function exportCSV(){
+  if(!grid.length){showToast('Générez le planning d\'abord.','warn');return;}
+  let csv='Employé,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi,Dimanche,Total\n';
+  EMPLOYEES.forEach((emp,ei)=>{
+    csv+=`"${emp.name}",`+grid[ei].map(c=>`"${c.shift}"`).join(',')+`,"${empH(ei)}h"\n`;
+  });
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='planning_rh.csv';a.click();
+  showToast('CSV exporté !','ok');
+}
+
+// ══════════════════════════════════
+//  UI
+// ══════════════════════════════════
+function showOverlay(m){document.getElementById('overlay-msg').textContent=m;document.getElementById('overlay').classList.add('active');}
+function hideOverlay(){document.getElementById('overlay').classList.remove('active');}
+let _tt;
+function showToast(m,t=''){
+  const el=document.getElementById('toast');
+  el.textContent=m;el.className='toast'+(t?' t-'+t:'');
+  clearTimeout(_tt);void el.offsetWidth;
+  el.classList.add('show');
+  _tt=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════
+//  INIT
+// ══════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  renderTable();updateStats();
+  document.getElementById('inp-name').addEventListener('keydown',e=>{if(e.key==='Enter')addEmployee();});
+});
+</script>
+</body>
+</html>
