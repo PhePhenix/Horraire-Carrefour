@@ -7,656 +7,240 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════
-   THÈME BLANC / NOIR
+   THÈME BLANC / NOIR — INCHANGÉ
 ══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:        #ffffff;
-  --bg2:       #f5f5f5;
-  --bg3:       #ebebeb;
-  --border:    #d0d0d0;
-  --border2:   #b0b0b0;
-  --text:      #111111;
-  --text2:     #555555;
-  --text3:     #999999;
-  --green:     #16a34a;
-  --green-bg:  #dcfce7;
-  --red:       #dc2626;
-  --red-bg:    #fee2e2;
-  --amber:     #d97706;
-  --amber-bg:  #fef3c7;
-  --blue:      #2563eb;
-  --blue-bg:   #dbeafe;
-  --radius:    8px;
-  --shadow:    0 2px 8px rgba(0,0,0,0.10);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
+  --bg:#ffffff; --bg2:#f5f5f5; --bg3:#ebebeb;
+  --border:#d0d0d0; --border2:#b0b0b0;
+  --text:#111111; --text2:#555555; --text3:#999999;
+  --green:#16a34a; --green-bg:#dcfce7;
+  --red:#dc2626; --red-bg:#fee2e2;
+  --amber:#d97706; --amber-bg:#fef3c7;
+  --blue:#2563eb; --blue-bg:#dbeafe;
+  --purple:#7c3aed; --purple-bg:#f3f0ff;
+  --radius:8px; --shadow:0 2px 8px rgba(0,0,0,.10); --shadow-lg:0 8px 32px rgba(0,0,0,.18);
+}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* ══ HEADER ══ */
+.header{background:var(--bg);border-bottom:2px solid var(--text);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.logo{font-size:1.1rem;font-weight:700;letter-spacing:-.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.logo-dot{width:10px;height:10px;background:var(--green);border-radius:50%;display:inline-block;}
+.menu-toggle{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--bg);-webkit-tap-highlight-color:transparent;transition:border-color .15s;}
+.menu-toggle:hover{border-color:var(--text);}
+.menu-toggle span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all .2s;}
+.menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.menu-toggle.open span:nth-child(2){opacity:0;}
+.menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.btn-gen-header{background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);padding:8px 16px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s;touch-action:manipulation;}
+.btn-gen-header:hover{opacity:.8;}
+.btn-gen-header:active{transform:scale(.97);}
+.header-right{display:flex;align-items:center;gap:10px;}
+
+/* ══ MENU DÉROULANT ══ */
+.dropdown-overlay{position:fixed;inset:0;z-index:150;display:none;}
+.dropdown-overlay.open{display:block;}
+.dropdown-menu{position:fixed;top:58px;right:12px;background:var(--bg);border:1.5px solid var(--text);border-radius:var(--radius);box-shadow:var(--shadow-lg);min-width:240px;z-index:300;overflow:hidden;display:none;flex-direction:column;}
+.dropdown-menu.open{display:flex;}
+.menu-item{display:flex;align-items:center;gap:10px;padding:13px 18px;font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;border:none;background:none;text-align:left;width:100%;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .1s;border-bottom:1px solid var(--border);text-decoration:none;touch-action:manipulation;}
+.menu-item:last-child{border-bottom:none;}
+.menu-item:hover{background:var(--bg2);}
+.menu-item:active{background:var(--bg3);}
+.menu-icon{font-size:1rem;width:20px;text-align:center;}
+.menu-sep{height:1px;background:var(--border);margin:4px 0;}
+
+/* ══ STATS ══ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;}
+.stat-label{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:3px;}
+.stat-val{font-size:1.25rem;font-weight:700;color:var(--text);line-height:1;}
+.sv-ok{color:var(--green)!important;} .sv-warn{color:var(--amber)!important;} .sv-danger{color:var(--red)!important;}
+
+/* ══ [NOUVEAU] BARRE BESOINS PAR JOUR ══ */
+.day-needs-bar{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.day-need-pill{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);min-width:58px;background:var(--bg2);font-size:.62rem;}
+.dnp-day{font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;}
+.dnp-count{font-size:.78rem;font-weight:700;}
+.dnp-req{color:var(--text3);}
+.dnp-ok{border-color:#86efac;background:var(--green-bg);}
+.dnp-under{border-color:#fca5a5;background:var(--red-bg);}
+.dnp-over{border-color:#fcd34d;background:var(--amber-bg);}
+
+/* ══ [NOUVEAU] ACTIONS RAPIDES ══ */
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.qa-btn{padding:8px 6px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--bg);font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;color:var(--text);-webkit-tap-highlight-color:transparent;transition:all .12s;text-align:center;touch-action:manipulation;line-height:1.3;}
+.qa-btn:hover{background:var(--bg3);border-color:var(--text2);}
+.qa-btn:active{transform:scale(.97);}
+.qa-green{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.qa-amber{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.qa-red{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.qa-blue{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+
+/* ══ LOG BAR ══ */
+.log-bar{padding:6px 16px;border-bottom:1px solid var(--border);font-size:.68rem;color:var(--text3);display:flex;gap:14px;flex-wrap:wrap;align-items:center;min-height:30px;background:var(--bg);}
+.log-entry{display:flex;align-items:center;gap:5px;}
+.log-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.d-ok{background:var(--green);} .d-warn{background:var(--amber);} .d-danger{background:var(--red);}
+
+/* ══ TABLE ══ */
+.table-wrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--bg);}
+table{width:100%;min-width:860px;border-collapse:collapse;font-size:.78rem;}
+thead th{background:var(--text);color:var(--bg);padding:10px 8px;font-size:.62rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;text-align:center;white-space:nowrap;border-right:1px solid #333;}
+thead th:first-child{text-align:left;padding-left:14px;min-width:150px;}
+thead th:last-child{border-right:none;min-width:80px;}
+thead th.th-we{background:#1a1a1a;} thead th.th-sun{background:#2a2000;color:#fbbf24;}
+tbody tr:nth-child(odd){background:var(--bg);}
+tbody tr:nth-child(even){background:var(--bg2);}
+tbody tr:hover{background:#e8f5e8;}
+td{padding:5px 5px;text-align:center;vertical-align:middle;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+td:first-child{text-align:left;padding-left:14px;font-weight:600;font-size:.8rem;color:var(--text);white-space:nowrap;}
+td:last-child{border-right:none;padding-right:8px;}
+
+/* ══ SELECT DANS TABLEAU ══ */
+.day-select{width:100%;min-width:96px;padding:5px 4px;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Inter',sans-serif;font-size:.7rem;font-weight:500;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;text-align:center;transition:border-color .12s;touch-action:manipulation;}
+.day-select:focus{border-color:var(--text);}
+.day-select:hover{border-color:var(--text2);}
+.day-select.s-repos{color:var(--text3);background:var(--bg2);}
+.day-select.s-locked{background:#eef0ff;border-color:#7b8cde;color:#3b4db8;pointer-events:none;cursor:not-allowed;}
+.day-select.s-sun{background:#fffbeb;border-color:#d97706;}
+/* [NOUVEAU] États feedback visuel */
+.day-select.s-unavail{background:var(--purple-bg);border-color:var(--purple);color:var(--purple);pointer-events:none;cursor:not-allowed;}
+
+/* [NOUVEAU] Drag & drop */
+td.drag-over{background:#dbeafe!important;outline:2px dashed var(--blue);outline-offset:-2px;}
+td.drag-source{opacity:.45;}
+
+/* ══ CHIPS HEURES ══ */
+.chip{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+.c-ok{background:var(--green-bg);color:var(--green);border:1px solid #86efac;}
+.c-under{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5;}
+.c-over{background:var(--amber-bg);color:var(--amber);border:1px solid #fcd34d;}
+.c-zero{background:var(--bg2);color:var(--text3);border:1px solid var(--border);}
+
+/* ══ PIED DE TABLEAU ══ */
+tfoot td{background:var(--bg3);font-size:.68rem;font-weight:600;color:var(--text2);padding:9px 5px;border-top:2px solid var(--text);border-right:1px solid var(--border);border-bottom:none;text-align:center;}
+tfoot td:first-child{text-align:left;padding-left:14px;font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:var(--text3);border-right:1px solid var(--border);}
+tfoot td:last-child{border-right:none;}
+.foot-cell{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.foot-count{font-size:.55rem;color:var(--text3);}
+.fc-ok{color:var(--green);} .fc-warn{color:var(--red);}
+.foot-grand{font-size:1rem;font-weight:700;color:var(--green);}
+
+/* ══ BADGES ══ */
+.badge-fixed{font-size:.55rem;background:var(--blue-bg);color:var(--blue);border:1px solid #93c5fd;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle;font-weight:600;}
+/* [NOUVEAU] Badge indispo */
+.badge-unavail{font-size:.55rem;background:var(--purple-bg);color:var(--purple);border:1px solid #c4b5fd;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;font-weight:600;}
+
+/* ══ SIDEBAR ══ */
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:400;display:none;opacity:0;transition:opacity .2s;}
+.sidebar-backdrop.open{display:block;opacity:1;}
+.sidebar{position:fixed;top:0;right:0;width:min(460px,100vw);height:100dvh;background:var(--bg);border-left:2px solid var(--text);z-index:500;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+.sidebar.open{transform:translateX(0);}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1.5px solid var(--border);flex-shrink:0;}
+.sidebar-title{font-size:1rem;font-weight:700;}
+.sidebar-close{width:32px;height:32px;border:1.5px solid var(--border);border-radius:6px;background:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);-webkit-tap-highlight-color:transparent;transition:border-color .1s;touch-action:manipulation;}
+.sidebar-close:hover{border-color:var(--text);}
+.sidebar-tabs{display:flex;border-bottom:1.5px solid var(--border);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.stab{flex-shrink:0;padding:11px 10px;font-size:.73rem;font-weight:600;text-align:center;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1.5px;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;touch-action:manipulation;}
+.stab.active{color:var(--text);border-bottom-color:var(--text);}
+.sidebar-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:.73rem;font-weight:600;color:var(--text2);margin-bottom:5px;}
+.form-input{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:border-color .12s;-webkit-appearance:none;appearance:none;}
+.form-input:focus{border-color:var(--text);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-full{width:100%;padding:11px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s;touch-action:manipulation;}
+.btn-full:hover{opacity:.85;}
+.btn-full:active{transform:scale(.98);}
+.btn-full.btn-danger{background:var(--red);}
+.btn-full.btn-outline-black{background:var(--bg);color:var(--text);border:1.5px solid var(--border);margin-top:8px;}
+.emp-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.emp-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;display:flex;align-items:center;gap:10px;}
+.emp-card-info{flex:1;min-width:0;}
+.emp-card-name{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.emp-card-meta{font-size:.65rem;color:var(--text3);margin-top:2px;}
+.btn-remove{flex-shrink:0;width:34px;height:34px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text3);-webkit-tap-highlight-color:transparent;transition:all .12s;touch-action:manipulation;}
+.btn-remove:hover{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.shift-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.shift-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;display:flex;align-items:center;gap:10px;}
+.shift-card-label{flex:1;font-size:.85rem;font-weight:600;}
+.shift-card-hours{font-size:.72rem;color:var(--text3);}
+.sep-label{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;margin-bottom:10px;margin-top:18px;}
+.sep-label:first-child{margin-top:0;}
+
+/* ══ [NOUVEAU] MODALE VÉRIFICATION MANAGER ══ */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:var(--bg);border:2px solid var(--text);border-radius:12px;width:100%;max-width:520px;max-height:85dvh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1.5px solid var(--border);flex-shrink:0;}
+.modal-title{font-size:1rem;font-weight:700;}
+.modal-close{width:32px;height:32px;border:1.5px solid var(--border);border-radius:6px;background:none;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);touch-action:manipulation;}
+.modal-body{flex:1;overflow-y:auto;padding:18px 20px;}
+.check-section{margin-bottom:16px;}
+.check-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.check-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:.83rem;border-bottom:1px solid var(--bg2);}
+.check-item:last-child{border-bottom:none;}
+.check-icon{flex-shrink:0;font-size:.9rem;line-height:1.4;}
+.check-text{flex:1;line-height:1.4;}
+
+/* ══ [NOUVEAU] INDISPONIBILITÉS ══ */
+.unavail-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0;}
+.unavail-day-btn{padding:8px 2px;border:1.5px solid var(--border);border-radius:5px;background:var(--bg);font-family:'Inter',sans-serif;font-size:.62rem;font-weight:600;cursor:pointer;color:var(--text2);text-align:center;-webkit-tap-highlight-color:transparent;transition:all .12s;touch-action:manipulation;}
+.unavail-day-btn.active{background:var(--purple-bg);border-color:var(--purple);color:var(--purple);}
+
+/* ══ OVERLAY GÉNÉRATION ══ */
+.gen-overlay{position:fixed;inset:0;background:rgba(255,255,255,.90);z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.gen-overlay.active{display:flex;}
+.spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gen-msg{font-size:.85rem;font-weight:600;color:var(--text2);}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:11px 20px;border-radius:40px;font-size:.8rem;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transition:all .2s;pointer-events:none;z-index:2000;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.toast-ok{background:var(--green);}
+.toast.toast-err{background:var(--red);}
+
+/* ══ RESPONSIVE MOBILE ══ */
+@media(max-width:600px){
+  .header{padding:0 12px;}
+  .stats{padding:10px 12px;gap:6px;}
+  .stat-val{font-size:1rem;}
+  .log-bar{padding:5px 12px;font-size:.63rem;}
+  table{font-size:.72rem;}
+  thead th{padding:8px 5px;font-size:.58rem;}
+  td{padding:4px 3px;}
+  /* [NOUVEAU MOBILE] selects plus grands et cibles tactiles minimum 44px */
+  .day-select{min-width:84px;font-size:.68rem;padding:7px 3px;}
+  .sidebar{width:100vw;}
+  .quick-actions{grid-template-columns:1fr 1fr;gap:6px;padding:8px 12px;}
+  .qa-btn{font-size:.67rem;padding:9px 5px;}
+  td:first-child{min-width:120px;padding-left:8px;}
+  .btn-remove{width:40px;height:40px;}
 }
 
-html, body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ══════════════════════════════════════════
-   HEADER
-══════════════════════════════════════════ */
-.header {
-  background: var(--bg);
-  border-bottom: 2px solid var(--text);
-  padding: 0 16px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-}
-
-.logo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.logo-dot {
-  width: 10px; height: 10px;
-  background: var(--green);
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/* Bouton hamburger */
-.menu-toggle {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  padding: 8px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.15s;
-}
-.menu-toggle:hover { border-color: var(--text); }
-.menu-toggle span {
-  display: block;
-  width: 20px; height: 2px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: all 0.2s;
-}
-.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.menu-toggle.open span:nth-child(2) { opacity: 0; }
-.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* Bouton générer dans header */
-.btn-gen-header {
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  border-radius: var(--radius);
-  padding: 8px 16px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s;
-}
-.btn-gen-header:hover { opacity: 0.8; }
-.btn-gen-header:active { transform: scale(0.97); }
-
-.header-right { display: flex; align-items: center; gap: 10px; }
-
-/* ══════════════════════════════════════════
-   MENU DÉROULANT
-══════════════════════════════════════════ */
-.dropdown-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 150;
-  display: none;
-}
-.dropdown-overlay.open { display: block; }
-
-.dropdown-menu {
-  position: fixed;
-  top: 58px;
-  right: 12px;
-  background: var(--bg);
-  border: 1.5px solid var(--text);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  min-width: 220px;
-  z-index: 300;
-  overflow: hidden;
-  display: none;
-  flex-direction: column;
-}
-.dropdown-menu.open { display: flex; }
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 18px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-  border: none;
-  background: none;
-  text-align: left;
-  width: 100%;
-  font-family: 'Inter', sans-serif;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.1s;
-  border-bottom: 1px solid var(--border);
-  text-decoration: none;
-}
-.menu-item:last-child { border-bottom: none; }
-.menu-item:hover { background: var(--bg2); }
-.menu-item:active { background: var(--bg3); }
-.menu-icon { font-size: 1rem; width: 20px; text-align: center; }
-.menu-sep {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
-}
-
-/* ══════════════════════════════════════════
-   STATS
-══════════════════════════════════════════ */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg2);
-}
-.stat {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-}
-.stat-label {
-  font-size: 0.6rem;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-.stat-val {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-.sv-ok     { color: var(--green) !important; }
-.sv-warn   { color: var(--amber) !important; }
-.sv-danger { color: var(--red)   !important; }
-
-/* ══════════════════════════════════════════
-   LOG BAR
-══════════════════════════════════════════ */
-.log-bar {
-  padding: 6px 16px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.68rem;
-  color: var(--text3);
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  align-items: center;
-  min-height: 30px;
-  background: var(--bg);
-}
-.log-entry { display: flex; align-items: center; gap: 5px; }
-.log-dot   { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.d-ok      { background: var(--green); }
-.d-warn    { background: var(--amber); }
-.d-danger  { background: var(--red);   }
-
-/* ══════════════════════════════════════════
-   TABLE
-══════════════════════════════════════════ */
-.table-wrap {
-  padding: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  background: var(--bg);
-}
-
-table {
-  width: 100%;
-  min-width: 860px;
-  border-collapse: collapse;
-  font-size: 0.78rem;
-}
-
-thead th {
-  background: var(--text);
-  color: var(--bg);
-  padding: 10px 8px;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  text-align: center;
-  white-space: nowrap;
-  border-right: 1px solid #333;
-}
-thead th:first-child  { text-align: left; padding-left: 14px; min-width: 150px; }
-thead th:last-child   { border-right: none; min-width: 80px; }
-thead th.th-we  { background: #1a1a1a; }
-thead th.th-sun { background: #2a2000; color: #fbbf24; }
-
-tbody tr:nth-child(odd)  { background: var(--bg); }
-tbody tr:nth-child(even) { background: var(--bg2); }
-tbody tr:hover           { background: #e8f5e8; }
-
-td {
-  padding: 5px 5px;
-  text-align: center;
-  vertical-align: middle;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-}
-td:first-child {
-  text-align: left;
-  padding-left: 14px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: var(--text);
-  white-space: nowrap;
-}
-td:last-child { border-right: none; padding-right: 8px; }
-
-/* ── SELECT DANS TABLEAU ── */
-.day-select {
-  width: 100%;
-  min-width: 96px;
-  padding: 5px 4px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  text-align: center;
-  transition: border-color 0.12s;
-}
-.day-select:focus  { border-color: var(--text); }
-.day-select:hover  { border-color: var(--text2); }
-.day-select.s-repos  { color: var(--text3); background: var(--bg2); }
-.day-select.s-locked { background: #eef0ff; border-color: #7b8cde; color: #3b4db8; pointer-events: none; cursor: not-allowed; }
-.day-select.s-sun    { background: #fffbeb; border-color: #d97706; }
-
-/* ── CHIPS HEURES ── */
-.chip {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.c-ok    { background: var(--green-bg); color: var(--green); border: 1px solid #86efac; }
-.c-under { background: var(--red-bg);   color: var(--red);   border: 1px solid #fca5a5; }
-.c-over  { background: var(--amber-bg); color: var(--amber); border: 1px solid #fcd34d; }
-.c-zero  { background: var(--bg2);      color: var(--text3); border: 1px solid var(--border); }
-
-/* ── PIED DE TABLEAU ── */
-tfoot td {
-  background: var(--bg3);
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--text2);
-  padding: 9px 5px;
-  border-top: 2px solid var(--text);
-  border-right: 1px solid var(--border);
-  border-bottom: none;
-  text-align: center;
-}
-tfoot td:first-child {
-  text-align: left;
-  padding-left: 14px;
-  font-size: 0.58rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text3);
-  border-right: 1px solid var(--border);
-}
-tfoot td:last-child { border-right: none; }
-.foot-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.foot-count { font-size: 0.55rem; color: var(--text3); }
-.fc-ok   { color: var(--green); }
-.fc-warn { color: var(--red); }
-.foot-grand { font-size: 1rem; font-weight: 700; color: var(--green); }
-
-/* ── BADGE FIXE ── */
-.badge-fixed {
-  font-size: 0.55rem;
-  background: var(--blue-bg);
-  color: var(--blue);
-  border: 1px solid #93c5fd;
-  padding: 1px 5px;
-  border-radius: 3px;
-  margin-left: 6px;
-  vertical-align: middle;
-  font-weight: 600;
-}
-
-/* ══════════════════════════════════════════
-   PANNEAU LATÉRAL (sidebar)
-══════════════════════════════════════════ */
-.sidebar-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 400;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.sidebar-backdrop.open { display: block; opacity: 1; }
-
-.sidebar {
-  position: fixed;
-  top: 0; right: 0;
-  width: min(420px, 100vw);
-  height: 100dvh;
-  background: var(--bg);
-  border-left: 2px solid var(--text);
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-  overflow: hidden;
-}
-.sidebar.open { transform: translateX(0); }
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1.5px solid var(--border);
-  flex-shrink: 0;
-}
-.sidebar-title { font-size: 1rem; font-weight: 700; }
-.sidebar-close {
-  width: 32px; height: 32px;
-  border: 1.5px solid var(--border);
-  border-radius: 6px;
-  background: none;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text);
-  -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.1s;
-}
-.sidebar-close:hover { border-color: var(--text); }
-
-/* Onglets sidebar */
-.sidebar-tabs {
-  display: flex;
-  border-bottom: 1.5px solid var(--border);
-  flex-shrink: 0;
-}
-.stab {
-  flex: 1;
-  padding: 11px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: 'Inter', sans-serif;
-  color: var(--text3);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1.5px;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.15s;
-}
-.stab.active { color: var(--text); border-bottom-color: var(--text); }
-
-.sidebar-body {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 18px;
-}
-
-/* Onglet caché */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* Formulaire */
-.form-group { margin-bottom: 14px; }
-.form-label {
-  display: block;
-  font-size: 0.73rem;
-  font-weight: 600;
-  color: var(--text2);
-  margin-bottom: 5px;
-}
-.form-input {
-  width: 100%;
-  padding: 9px 11px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.12s;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.form-input:focus { border-color: var(--text); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* Bouton principale sidebar */
-.btn-full {
-  width: 100%;
-  padding: 11px;
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  border-radius: var(--radius);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s;
-}
-.btn-full:hover { opacity: 0.85; }
-.btn-full:active { transform: scale(0.98); }
-.btn-full.btn-danger { background: var(--red); }
-.btn-full.btn-outline-black {
-  background: var(--bg);
-  color: var(--text);
-  border: 1.5px solid var(--border);
-  margin-top: 8px;
-}
-
-/* Liste employés */
-.emp-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.emp-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 11px 13px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.emp-card-info { flex: 1; min-width: 0; }
-.emp-card-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.emp-card-meta { font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
-.btn-remove {
-  flex-shrink: 0;
-  width: 30px; height: 30px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: none;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem;
-  color: var(--text3);
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.12s;
-}
-.btn-remove:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-
-/* Section horaires */
-.shift-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.shift-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 13px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.shift-card-label { flex: 1; font-size: 0.85rem; font-weight: 600; }
-.shift-card-hours { font-size: 0.72rem; color: var(--text3); }
-.sep-label {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text3);
-  font-weight: 600;
-  margin-bottom: 10px;
-  margin-top: 18px;
-}
-.sep-label:first-child { margin-top: 0; }
-
-/* ══════════════════════════════════════════
-   OVERLAY GÉNÉRATION
-══════════════════════════════════════════ */
-.gen-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255,255,255,0.90);
-  z-index: 1000;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-.gen-overlay.active { display: flex; }
-.spinner {
-  width: 34px; height: 34px;
-  border: 3px solid var(--border);
-  border-top-color: var(--text);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.gen-msg { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
-
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
-.toast {
-  position: fixed;
-  bottom: 20px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--text);
-  color: var(--bg);
-  padding: 11px 20px;
-  border-radius: 40px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  transition: all 0.2s;
-  pointer-events: none;
-  z-index: 2000;
-  white-space: nowrap;
-  max-width: 90vw;
-  text-align: center;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ══════════════════════════════════════════
-   RESPONSIVE MOBILE
-══════════════════════════════════════════ */
-@media (max-width: 600px) {
-  .header { padding: 0 12px; }
-  .stats  { padding: 10px 12px; gap: 6px; }
-  .stat-val { font-size: 1rem; }
-  .log-bar { padding: 5px 12px; font-size: 0.63rem; }
-  table { font-size: 0.72rem; }
-  thead th { padding: 8px 5px; font-size: 0.58rem; }
-  td { padding: 4px 3px; }
-  .day-select { min-width: 82px; font-size: 0.65rem; }
-  .sidebar { width: 100vw; }
-}
-
-/* ══════════════════════════════════════════
-   IMPRESSION
-══════════════════════════════════════════ */
-@media print {
-  .header .header-right, .dropdown-menu, .sidebar, .sidebar-backdrop,
-  .toast, .gen-overlay, .log-bar { display: none !important; }
-  body, html { background: white; }
-  .table-wrap { overflow: visible; }
-  table { min-width: unset; font-size: 0.68rem; }
-  .day-select { border: none; appearance: none; pointer-events: none; font-size: 0.65rem; background: transparent; }
-  .day-select.s-locked { color: #3b4db8; }
-  thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  tbody tr:nth-child(even) { background: #f5f5f5 !important; print-color-adjust: exact; }
+/* ══ IMPRESSION ══ */
+@media print{
+  .header .header-right,.dropdown-menu,.sidebar,.sidebar-backdrop,
+  .toast,.gen-overlay,.log-bar,.quick-actions,.day-needs-bar,.modal-backdrop{display:none!important;}
+  body,html{background:white;}
+  .table-wrap{overflow:visible;}
+  table{min-width:unset;font-size:.68rem;}
+  .day-select{border:none;appearance:none;pointer-events:none;font-size:.65rem;background:transparent;}
+  .day-select.s-locked{color:#3b4db8;}
+  thead th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  tbody tr:nth-child(even){background:#f5f5f5!important;print-color-adjust:exact;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     HEADER
-══════════════════════════════════════ -->
+<!-- HEADER -->
 <header class="header">
-  <div class="logo">
-    <span class="logo-dot"></span>
-    Planning RH
-  </div>
+  <div class="logo"><span class="logo-dot"></span>Planning RH</div>
   <div class="header-right">
     <button class="btn-gen-header" onclick="runGenerate()">⚡ Générer</button>
     <div class="menu-toggle" id="menu-toggle" onclick="toggleMenu()">
@@ -668,54 +252,42 @@ tfoot td:last-child { border-right: none; }
 <!-- Menu déroulant -->
 <div class="dropdown-overlay" id="dd-overlay" onclick="closeMenu()"></div>
 <div class="dropdown-menu" id="dd-menu">
-  <button class="menu-item" onclick="menuAction('employes')">
-    <span class="menu-icon">👥</span> Gérer les employés
-  </button>
-  <button class="menu-item" onclick="menuAction('horaires')">
-    <span class="menu-icon">🕐</span> Gérer les horaires
-  </button>
+  <button class="menu-item" onclick="menuAction('employes')"><span class="menu-icon">👥</span> Gérer les employés</button>
+  <button class="menu-item" onclick="menuAction('horaires')"><span class="menu-icon">🕐</span> Gérer les horaires</button>
+  <button class="menu-item" onclick="menuAction('besoins')"><span class="menu-icon">📋</span> Besoins par jour</button>
+  <button class="menu-item" onclick="menuAction('indispos')"><span class="menu-icon">🚫</span> Indisponibilités</button>
+  <div class="menu-sep"></div>
+  <button class="menu-item" onclick="menuAction('check')"><span class="menu-icon">🔍</span> Vérification manager</button>
   <div class="menu-sep"></div>
   <button class="menu-item" onclick="menuAction('unlock')">
     <span class="menu-icon" id="mi-lock-icon">🔓</span>
     <span id="mi-lock-label">Débloquer horaires fixes</span>
   </button>
   <div class="menu-sep"></div>
-  <button class="menu-item" onclick="menuAction('csv')">
-    <span class="menu-icon">📥</span> Exporter CSV
-  </button>
-  <button class="menu-item" onclick="menuAction('print')">
-    <span class="menu-icon">🖨️</span> Imprimer
-  </button>
+  <button class="menu-item" onclick="menuAction('csv')"><span class="menu-icon">📥</span> Exporter CSV</button>
+  <button class="menu-item" onclick="menuAction('print')"><span class="menu-icon">🖨️</span> Imprimer</button>
   <div class="menu-sep"></div>
-  <button class="menu-item" onclick="menuAction('reset')" style="color:#dc2626">
-    <span class="menu-icon">↺</span> Réinitialiser
-  </button>
+  <button class="menu-item" onclick="menuAction('reset')" style="color:#dc2626"><span class="menu-icon">↺</span> Réinitialiser</button>
 </div>
 
-<!-- ══════════════════════════════════════
-     STATS
-══════════════════════════════════════ -->
+<!-- STATS -->
 <div class="stats">
-  <div class="stat">
-    <div class="stat-label">Total heures</div>
-    <div class="stat-val" id="st-total">0 h</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Objectif</div>
-    <div class="stat-val">300 h</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Écart</div>
-    <div class="stat-val" id="st-diff">–</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Employés</div>
-    <div class="stat-val" id="st-emp">–</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Violations</div>
-    <div class="stat-val" id="st-viol">–</div>
-  </div>
+  <div class="stat"><div class="stat-label">Total heures</div><div class="stat-val" id="st-total">0 h</div></div>
+  <div class="stat"><div class="stat-label">Objectif</div><div class="stat-val">300 h</div></div>
+  <div class="stat"><div class="stat-label">Écart</div><div class="stat-val" id="st-diff">–</div></div>
+  <div class="stat"><div class="stat-label">Employés</div><div class="stat-val" id="st-emp">–</div></div>
+  <div class="stat"><div class="stat-label">Violations</div><div class="stat-val" id="st-viol">–</div></div>
+</div>
+
+<!-- [NOUVEAU] Barre besoins par jour -->
+<div class="day-needs-bar" id="day-needs-bar"></div>
+
+<!-- [NOUVEAU] Actions rapides -->
+<div class="quick-actions">
+  <button class="qa-btn qa-green" onclick="actionCompleteHours()">✅ Compléter heures</button>
+  <button class="qa-btn qa-blue"  onclick="actionRebalance()">⚖️ Rééquilibrer</button>
+  <button class="qa-btn qa-amber" onclick="actionAutoFix()">🔧 Corriger auto</button>
+  <button class="qa-btn qa-red"   onclick="openModal('modal-check')">🔍 Vérifier</button>
 </div>
 
 <!-- LOG BAR -->
@@ -723,32 +295,16 @@ tfoot td:last-child { border-right: none; }
   <div class="log-entry"><div class="log-dot d-ok"></div><span>Prêt — appuyez sur Générer.</span></div>
 </div>
 
-<!-- ══════════════════════════════════════
-     TABLEAU
-══════════════════════════════════════ -->
-<div class="table-wrap">
+<!-- TABLEAU -->
+<div class="table-wrap" id="table-wrap">
   <table id="main-table">
-    <thead>
-      <tr id="thead-row">
-        <th>Employé</th>
-        <!-- colonnes jours générées en JS -->
-        <th>Total</th>
-      </tr>
-    </thead>
+    <thead><tr id="thead-row"><th>Employé</th><th>Total</th></tr></thead>
     <tbody id="tbody"></tbody>
-    <tfoot>
-      <tr id="tfoot-row">
-        <td>Total / jour</td>
-        <!-- cellules générées en JS -->
-        <td class="foot-grand" id="fd-grand">–</td>
-      </tr>
-    </tfoot>
+    <tfoot><tr id="tfoot-row"><td>Total / jour</td><td class="foot-grand" id="fd-grand">–</td></tr></tfoot>
   </table>
 </div>
 
-<!-- ══════════════════════════════════════
-     PANNEAU LATÉRAL
-══════════════════════════════════════ -->
+<!-- PANNEAU LATÉRAL -->
 <div class="sidebar-backdrop" id="sb-backdrop" onclick="closeSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
@@ -758,17 +314,17 @@ tfoot td:last-child { border-right: none; }
   <div class="sidebar-tabs" id="sb-tabs">
     <button class="stab active" onclick="switchTab('employes')">👥 Employés</button>
     <button class="stab" onclick="switchTab('horaires')">🕐 Horaires</button>
+    <button class="stab" onclick="switchTab('besoins')">📋 Besoins</button>
+    <button class="stab" onclick="switchTab('indispos')">🚫 Indispos</button>
   </div>
   <div class="sidebar-body">
 
-    <!-- ── ONGLET EMPLOYÉS ── -->
+    <!-- ONGLET EMPLOYÉS (INCHANGÉ) -->
     <div class="tab-content active" id="tab-employes">
-
       <div class="sep-label">Ajouter un employé</div>
       <div class="form-group">
         <label class="form-label">Nom complet</label>
-        <input class="form-input" id="inp-name" type="text" placeholder="Ex : Marie Martin" maxlength="40"
-               autocomplete="off" autocorrect="off" spellcheck="false">
+        <input class="form-input" id="inp-name" type="text" placeholder="Ex : Marie Martin" maxlength="40" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -788,19 +344,16 @@ tfoot td:last-child { border-right: none; }
         </select>
       </div>
       <button class="btn-full" onclick="addEmployee()">+ Ajouter l'employé</button>
-
       <div class="sep-label">Liste des employés (<span id="emp-count">0</span>)</div>
       <div class="emp-list" id="emp-list"></div>
     </div>
 
-    <!-- ── ONGLET HORAIRES ── -->
+    <!-- ONGLET HORAIRES (INCHANGÉ) -->
     <div class="tab-content" id="tab-horaires">
-
       <div class="sep-label">Ajouter un créneau horaire</div>
       <div class="form-group">
         <label class="form-label">Libellé (ex : 9h–15h)</label>
-        <input class="form-input" id="sh-label" type="text" placeholder="Ex : 9h–15h"
-               autocomplete="off" autocorrect="off" spellcheck="false">
+        <input class="form-input" id="sh-label" type="text" placeholder="Ex : 9h–15h" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div class="form-group">
         <label class="form-label">Durée en heures</label>
@@ -814,261 +367,294 @@ tfoot td:last-child { border-right: none; }
         </select>
       </div>
       <button class="btn-full" onclick="addShift()">+ Ajouter le créneau</button>
-
       <div class="sep-label">Créneaux actuels</div>
       <div class="shift-list" id="shift-list"></div>
-      <p style="font-size:0.68rem;color:var(--text3);margin-top:10px;">
-        ⚠ Le créneau REPOS ne peut pas être supprimé. Après modification, regénérez le planning.
-      </p>
+      <p style="font-size:.68rem;color:var(--text3);margin-top:10px;">⚠ Le créneau REPOS ne peut pas être supprimé. Après modification, regénérez le planning.</p>
+    </div>
+
+    <!-- [NOUVEAU] ONGLET BESOINS PAR JOUR -->
+    <div class="tab-content" id="tab-besoins">
+      <div class="sep-label">Nombre d'employés requis par jour</div>
+      <p style="font-size:.72rem;color:var(--text3);margin-bottom:14px;">Définissez le nombre min/max d'employés présents chaque jour. Le planning affichera si un jour est incomplet ou surchargé.</p>
+      <div id="besoins-form"></div>
+      <button class="btn-full" style="margin-top:10px;" onclick="saveBesoins()">💾 Enregistrer les besoins</button>
+    </div>
+
+    <!-- [NOUVEAU] ONGLET INDISPONIBILITÉS -->
+    <div class="tab-content" id="tab-indispos">
+      <div class="sep-label">Sélectionner un employé</div>
+      <select class="form-input" id="indispo-emp-sel" onchange="renderIndispoEditor()"></select>
+      <div style="margin-top:14px;" id="indispo-editor"></div>
+      <button class="btn-full" style="margin-top:10px;" onclick="saveIndispos()">💾 Enregistrer les indisponibilités</button>
     </div>
 
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     OVERLAY + TOAST
-══════════════════════════════════════ -->
+<!-- [NOUVEAU] MODALE VÉRIFICATION MANAGER -->
+<div class="modal-backdrop" id="modal-check" onclick="closeModalOnBg(event,'modal-check')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span class="modal-title">🔍 Vérification Manager</span>
+      <button class="modal-close" onclick="closeModal('modal-check')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-check-body"></div>
+  </div>
+</div>
+
+<!-- OVERLAY + TOAST -->
 <div class="gen-overlay" id="gen-overlay">
   <div class="spinner"></div>
   <div class="gen-msg" id="gen-msg">Génération en cours…</div>
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════
-     SCRIPT
-══════════════════════════════════════ -->
 <script>
 'use strict';
 // ════════════════════════════════════════
-//  CONFIG
+//  CONFIG (INCHANGÉE)
 // ════════════════════════════════════════
 const CFG = {
-  TARGET:       300,
-  TARGET_MIN:   280,
-  TARGET_MAX:   320,
-  MAX_PER_DAY:  6,
-  SAT_EXACT:    5,
-  SUN_EXACT:    6,
-  MAX_CONSEC:   6,
-  MAX_SAME_SHIFT: 2,
-  MIN_WORKDAYS: 5,
-  PASSES:       800,
+  TARGET:300, TARGET_MIN:280, TARGET_MAX:320,
+  MAX_PER_DAY:6, SAT_EXACT:5, SUN_EXACT:6,
+  MAX_CONSEC:6, MAX_SAME_SHIFT:2, MIN_WORKDAYS:5, PASSES:800,
 };
-
-const DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-const SAT = 5, SUN = 6;
+const DAYS       = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const DAYS_SHORT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const SAT=5, SUN=6;
 
 // ════════════════════════════════════════
-//  DONNÉES INITIALES
+//  DONNÉES INITIALES (INCHANGÉES)
 // ════════════════════════════════════════
-
-// Créneaux horaires — stockés dans SHIFTS (objet) et SHIFT_ORDER (tableau ordonné)
-// Structure : { label, h, sunOk }
-// sunOk = true → autorisé le dimanche (matin uniquement)
 let SHIFTS = {
-  'REPOS':     { label:'REPOS',     h:0,   sunOk:true  },
-  '6h–12h':   { label:'6h–12h',   h:6,   sunOk:true  },
-  '8h–14h15': { label:'8h–14h15', h:6,   sunOk:true  },
-  '8h–17h15': { label:'8h–17h15', h:8,   sunOk:true  },
-  '10h–16h15':{ label:'10h–16h15',h:6,   sunOk:true  },
-  '10h–19h15':{ label:'10h–19h15',h:8,   sunOk:false },
-  '14h–19h15':{ label:'14h–19h15',h:5,   sunOk:false },
+  'REPOS':     {label:'REPOS',    h:0,sunOk:true},
+  '6h–12h':   {label:'6h–12h',  h:6,sunOk:true},
+  '8h–14h15': {label:'8h–14h15',h:6,sunOk:true},
+  '8h–17h15': {label:'8h–17h15',h:8,sunOk:true},
+  '10h–16h15':{label:'10h–16h15',h:6,sunOk:true},
+  '10h–19h15':{label:'10h–19h15',h:8,sunOk:false},
+  '14h–19h15':{label:'14h–19h15',h:5,sunOk:false},
 };
-// Ordre d'affichage des clés
 let SHIFT_ORDER = ['REPOS','6h–12h','8h–14h15','8h–17h15','10h–16h15','10h–19h15','14h–19h15'];
 
-// Employés
+// LISTE EMPLOYÉS — NE PAS MODIFIER
 let EMPLOYEES = [
-  { name:'Jean-Yves',     minH:35, maxH:38, fixed:true  },
-  { name:'Elisa',         minH:25, maxH:25, fixed:false },
-  { name:'Marianne',      minH:20, maxH:20, fixed:false },
-  { name:'Aurélie',       minH:30, maxH:30, fixed:false },
-  { name:'Jérémy',        minH:30, maxH:30, fixed:false },
-  { name:'David',         minH:15, maxH:38, fixed:false },
-  { name:'Jérôme',        minH:15, maxH:38, fixed:false },
-  { name:'Fiona',         minH:15, maxH:38, fixed:false },
-  { name:'Axel',          minH:15, maxH:38, fixed:false },
-  { name:'Nathan',        minH:15, maxH:38, fixed:false },
-  { name:'Alexandre',     minH:15, maxH:38, fixed:false },
-  { name:'Ophélie',       minH:15, maxH:38, fixed:false },
-  { name:'Mylan',         minH:35, maxH:38, fixed:true  },
-  { name:'Richard Stage', minH:15, maxH:38, fixed:false },
+  {name:'Jean-Yves',    minH:35,maxH:38,fixed:true},
+  {name:'Elisa',        minH:25,maxH:25,fixed:false},
+  {name:'Marianne',     minH:20,maxH:20,fixed:false},
+  {name:'Aurélie',      minH:30,maxH:30,fixed:false},
+  {name:'Jérémy',       minH:30,maxH:30,fixed:false},
+  {name:'David',        minH:15,maxH:38,fixed:false},
+  {name:'Jérôme',       minH:15,maxH:38,fixed:false},
+  {name:'Fiona',        minH:15,maxH:38,fixed:false},
+  {name:'Axel',         minH:15,maxH:38,fixed:false},
+  {name:'Nathan',       minH:15,maxH:38,fixed:false},
+  {name:'Alexandre',    minH:15,maxH:38,fixed:false},
+  {name:'Ophélie',      minH:15,maxH:38,fixed:false},
+  {name:'Mylan',        minH:35,maxH:38,fixed:true},
+  {name:'Richard Stage',minH:15,maxH:38,fixed:false},
 ];
-
-// Noms des employés "clé" du dimanche (par nom, résistant aux index)
 const SUN_KEY_NAMES = ['Jérôme','Aurélie','David','Marianne','Elisa'];
 
 // ════════════════════════════════════════
 //  ÉTAT
 // ════════════════════════════════════════
-let grid = [];          // grid[ei][di] = { shift: key, locked: bool }
-let logs = [];
-let fixesUnlocked = false;
+let grid=[];
+let logs=[];
+let fixesUnlocked=false;
+
+/**
+ * [NOUVEAU] Indisponibilités par employé
+ * unavailability[ei] = tableau d'indices de jours indisponibles
+ */
+let unavailability={};
+
+/**
+ * [NOUVEAU] Besoins par jour : dayNeeds[di] = {min, max}
+ */
+let dayNeeds = DAYS.map((_,di)=>{
+  if(di===SAT) return {min:5,max:5};
+  if(di===SUN) return {min:4,max:6};
+  return {min:3,max:6};
+});
 
 // ════════════════════════════════════════
-//  HELPERS
+//  HELPERS (INCHANGÉS)
 // ════════════════════════════════════════
-function shiftH(sk)    { return (SHIFTS[sk] && !isNaN(SHIFTS[sk].h)) ? SHIFTS[sk].h : 0; }
-function empH(ei)      { return DAYS.reduce((s,_,di)=> s + shiftH(safeShift(ei,di)), 0); }
-function empDays(ei)   { return DAYS.reduce((n,_,di)=> n + (safeShift(ei,di)!=='REPOS'?1:0), 0); }
-function grandTotal()  { return EMPLOYEES.reduce((s,_,ei)=> s + empH(ei), 0); }
-function dayCount(di)  { return EMPLOYEES.reduce((n,_,ei)=> n + (safeShift(ei,di)!=='REPOS'?1:0), 0); }
-function shiftCount(di,sk){ return EMPLOYEES.reduce((n,_,ei)=> n+(safeShift(ei,di)===sk?1:0),0); }
-function dayLimit(di)  { return di===SAT?CFG.SAT_EXACT : di===SUN?CFG.SUN_EXACT : CFG.MAX_PER_DAY; }
-function sunKeyIdx()   { return SUN_KEY_NAMES.map(n=>EMPLOYEES.findIndex(e=>e.name===n)).filter(i=>i>=0); }
-function workKeys()    { return SHIFT_ORDER.filter(k=>k!=='REPOS'); }
-function sunKeys()     { return SHIFT_ORDER.filter(k=>k!=='REPOS' && SHIFTS[k] && SHIFTS[k].sunOk); }
-function log(msg,type='ok'){ logs.push({msg,type}); }
+function shiftH(sk)   {return(SHIFTS[sk]&&!isNaN(SHIFTS[sk].h))?SHIFTS[sk].h:0;}
+function empH(ei)     {return DAYS.reduce((s,_,di)=>s+shiftH(safeShift(ei,di)),0);}
+function empDays(ei)  {return DAYS.reduce((n,_,di)=>n+(safeShift(ei,di)!=='REPOS'?1:0),0);}
+function grandTotal() {return EMPLOYEES.reduce((s,_,ei)=>s+empH(ei),0);}
+function dayCount(di) {return EMPLOYEES.reduce((n,_,ei)=>n+(safeShift(ei,di)!=='REPOS'?1:0),0);}
+function shiftCount(di,sk){return EMPLOYEES.reduce((n,_,ei)=>n+(safeShift(ei,di)===sk?1:0),0);}
+function dayLimit(di) {return di===SAT?CFG.SAT_EXACT:di===SUN?CFG.SUN_EXACT:CFG.MAX_PER_DAY;}
+function sunKeyIdx()  {return SUN_KEY_NAMES.map(n=>EMPLOYEES.findIndex(e=>e.name===n)).filter(i=>i>=0);}
+function workKeys()   {return SHIFT_ORDER.filter(k=>k!=='REPOS');}
+function sunKeys()    {return SHIFT_ORDER.filter(k=>k!=='REPOS'&&SHIFTS[k]&&SHIFTS[k].sunOk);}
+function log(msg,type='ok'){logs.push({msg,type});}
+function safeShift(ei,di){if(!grid[ei]||!grid[ei][di])return'REPOS';return grid[ei][di].shift||'REPOS';}
+function maxConsec(ei){let m=0,c=0;for(let di=0;di<7;di++){if(safeShift(ei,di)!=='REPOS'){c++;m=Math.max(m,c);}else c=0;}return m;}
 
-// Lecture sûre dans la grille (évite crash si grid pas encore initialisée)
-function safeShift(ei,di){
-  if(!grid[ei]||!grid[ei][di]) return 'REPOS';
-  return grid[ei][di].shift||'REPOS';
-}
-
-function maxConsec(ei){
-  let max=0,cur=0;
-  for(let di=0;di<7;di++){if(safeShift(ei,di)!=='REPOS'){cur++;max=Math.max(max,cur);}else cur=0;}
-  return max;
-}
-
-// Horaires fixes : pour les employés marqués fixed → Lun–Sam 6h–12h, Dim repos
 function buildFixed(){
   const fs={};
   EMPLOYEES.forEach((emp,ei)=>{
-    if(emp.fixed){
-      fs[ei]={};
-      for(let di=0;di<=5;di++) fs[ei][di]='6h–12h';
-      fs[ei][6]='REPOS';
-    }
+    if(emp.fixed){fs[ei]={};for(let di=0;di<=5;di++)fs[ei][di]='6h–12h';fs[ei][6]='REPOS';}
   });
   return fs;
 }
 
 // ════════════════════════════════════════
-//  MOTEUR DE GÉNÉRATION
+//  [NOUVEAU] HELPERS INDISPONIBILITÉS
+// ════════════════════════════════════════
+
+/** Retourne true si l'employé ei est indisponible le jour di */
+function isUnavailable(ei,di){
+  return !!(unavailability[ei]&&unavailability[ei].includes(di));
+}
+
+/** Initialise les indispos manquantes */
+function initUnavailability(){
+  EMPLOYEES.forEach((_,ei)=>{if(!unavailability[ei])unavailability[ei]=[];});
+}
+
+// ════════════════════════════════════════
+//  [NOUVEAU] VALIDATION EN TEMPS RÉEL
+// ════════════════════════════════════════
+
+/**
+ * Valide l'affectation d'un créneau sk à l'employé ei le jour di.
+ * Retourne null si OK, sinon un message d'erreur lisible.
+ */
+function validateAssignment(ei,di,sk){
+  const emp=EMPLOYEES[ei];
+  if(sk==='REPOS') return null; // REPOS toujours autorisé
+
+  // Jour indisponible
+  if(isUnavailable(ei,di)) return `${emp.name} est indisponible ce jour.`;
+
+  // Créneau non autorisé le dimanche
+  if(di===SUN&&SHIFTS[sk]&&!SHIFTS[sk].sunOk) return `Créneau non autorisé le dimanche pour ${emp.name}.`;
+
+  // Simulation jours consécutifs
+  const bk=grid[ei][di];
+  grid[ei][di]={shift:sk,locked:bk.locked};
+  const consec=maxConsec(ei);
+  grid[ei][di]=bk;
+  if(consec>CFG.MAX_CONSEC) return `${emp.name} dépasserait ${CFG.MAX_CONSEC} jours consécutifs.`;
+
+  // Vérification heures max
+  const newH=empH(ei)-shiftH(safeShift(ei,di))+shiftH(sk);
+  if(newH>emp.maxH+0.05) return `${emp.name} dépasserait ses ${emp.maxH}h contractuelles (→ ${newH.toFixed(1)}h).`;
+
+  return null;
+}
+
+// ════════════════════════════════════════
+//  MOTEUR DE GÉNÉRATION (INCHANGÉ + amélioré indispos)
 // ════════════════════════════════════════
 function initGrid(){
-  grid = EMPLOYEES.map(()=> DAYS.map(()=>({shift:'REPOS',locked:false})));
+  grid=EMPLOYEES.map(()=>DAYS.map(()=>({shift:'REPOS',locked:false})));
   log('Grille initialisée.');
 }
 
 function applyFixed(){
-  const FS=buildFixed();
-  let n=0;
-  for(const [ei,days] of Object.entries(FS)){
-    for(const [di,sk] of Object.entries(days)){
-      const shift = SHIFTS[sk] ? sk : 'REPOS'; // sécurité si créneau supprimé
-      grid[ei][di]={shift, locked:!fixesUnlocked};
-      n++;
+  const FS=buildFixed();let n=0;
+  for(const[ei,days]of Object.entries(FS)){
+    for(const[di,sk]of Object.entries(days)){
+      const shift=SHIFTS[sk]?sk:'REPOS';
+      grid[ei][di]={shift,locked:!fixesUnlocked};n++;
     }
   }
   log(`${n} créneaux fixes verrouillés.`);
 }
 
 function canAddToDay(di,ei){
-  if(!grid[ei]||!grid[ei][di]) return false;
-  if(grid[ei][di].locked) return false;
-  return dayCount(di) < dayLimit(di);
+  if(!grid[ei]||!grid[ei][di])return false;
+  if(grid[ei][di].locked)return false;
+  return dayCount(di)<dayLimit(di);
 }
 
 function canUseShift(di,sk){
-  if(sk==='REPOS') return true;
-  if(di===SUN && (!SHIFTS[sk]||!SHIFTS[sk].sunOk)) return false;
-  return shiftCount(di,sk) < CFG.MAX_SAME_SHIFT;
+  if(sk==='REPOS')return true;
+  if(di===SUN&&(!SHIFTS[sk]||!SHIFTS[sk].sunOk))return false;
+  return shiftCount(di,sk)<CFG.MAX_SAME_SHIFT;
 }
 
 function pickShift(ei,di,curH,emp){
-  const rem = emp.maxH - curH;
-  if(rem<=0) return null;
-  const available = di===SUN ? sunKeys() : workKeys();
-  // Filtrer les clés qui existent encore dans SHIFTS
-  const valid = available.filter(sk=> SHIFTS[sk] && shiftH(sk)<=rem+0.1 && canUseShift(di,sk));
-  if(!valid.length) return null;
-  const dLeft = Math.max(1, 7-di);
-  const tgt = rem/dLeft;
+  const rem=emp.maxH-curH;if(rem<=0)return null;
+  const available=di===SUN?sunKeys():workKeys();
+  const valid=available.filter(sk=>SHIFTS[sk]&&shiftH(sk)<=rem+0.1&&canUseShift(di,sk));
+  if(!valid.length)return null;
+  const dLeft=Math.max(1,7-di);const tgt=rem/dLeft;
   return valid.sort((a,b)=>Math.abs(shiftH(a)-tgt)-Math.abs(shiftH(b)-tgt))[0];
 }
 
 function okConsec(ei,di){
-  const bk=grid[ei][di];
-  // Utilise le premier créneau de travail disponible pour le test
-  const testKey = workKeys()[0]||'6h–12h';
-  grid[ei][di]={shift:testKey,locked:false};
-  const ok=maxConsec(ei)<=CFG.MAX_CONSEC;
-  grid[ei][di]=bk;
-  return ok;
+  const bk=grid[ei][di];const testKey=workKeys()[0]||'6h–12h';
+  grid[ei][di]={shift:testKey,locked:false};const ok=maxConsec(ei)<=CFG.MAX_CONSEC;
+  grid[ei][di]=bk;return ok;
 }
 
-function sortByH(arr){ return [...arr].sort((a,b)=>empH(a)-empH(b)); }
+function sortByH(arr){return[...arr].sort((a,b)=>empH(a)-empH(b));}
 
 function fillDay(di,limit,candidates,priority){
-  let placed=dayCount(di);
-  if(placed>=limit) return;
-  const need=limit-placed;
-  const free=candidates.filter(ei=>grid[ei]&&grid[ei][di]&&!grid[ei][di].locked&&grid[ei][di].shift==='REPOS');
+  let placed=dayCount(di);if(placed>=limit)return;const need=limit-placed;
+  // [NOUVEAU] Exclure les indisponibles
+  const free=candidates.filter(ei=>grid[ei]&&grid[ei][di]&&!grid[ei][di].locked&&grid[ei][di].shift==='REPOS'&&!isUnavailable(ei,di));
   const prio=sortByH(free.filter(ei=>priority.includes(ei)));
   const rest=sortByH(free.filter(ei=>!priority.includes(ei)));
   let done=0;
-  for(const ei of [...prio,...rest]){
-    if(done>=need) break;
-    if(!okConsec(ei,di)) continue;
-    const sk=pickShift(ei,di,empH(ei),EMPLOYEES[ei]);
-    if(!sk) continue;
-    grid[ei][di]={shift:sk,locked:false};
-    done++;
+  for(const ei of[...prio,...rest]){
+    if(done>=need)break;if(!okConsec(ei,di))continue;
+    const sk=pickShift(ei,di,empH(ei),EMPLOYEES[ei]);if(!sk)continue;
+    grid[ei][di]={shift:sk,locked:false};done++;
   }
 }
 
 function enforceMinDays(){
   let added=0;
   EMPLOYEES.forEach((emp,ei)=>{
-    if(empDays(ei)>=CFG.MIN_WORKDAYS) return;
+    if(empDays(ei)>=CFG.MIN_WORKDAYS)return;
     const missing=CFG.MIN_WORKDAYS-empDays(ei);
     const free=DAYS.map((_,di)=>di)
-      .filter(di=>grid[ei][di].shift==='REPOS'&&!grid[ei][di].locked)
+      .filter(di=>grid[ei][di].shift==='REPOS'&&!grid[ei][di].locked&&!isUnavailable(ei,di)) // [NOUVEAU]
       .sort((a,b)=>dayCount(a)-dayCount(b));
     let done=0;
     for(const di of free){
-      if(done>=missing) break;
-      if(dayCount(di)>=dayLimit(di)) continue;
-      if(!okConsec(ei,di)) continue;
-      const sk=pickShift(ei,di,empH(ei),emp);
-      if(!sk) continue;
-      grid[ei][di]={shift:sk,locked:false};
-      done++; added++;
+      if(done>=missing)break;if(dayCount(di)>=dayLimit(di))continue;if(!okConsec(ei,di))continue;
+      const sk=pickShift(ei,di,empH(ei),emp);if(!sk)continue;
+      grid[ei][di]={shift:sk,locked:false};done++;added++;
     }
   });
-  if(added>0) log(`${added} créneaux ajoutés (min ${CFG.MIN_WORKDAYS}j/sem).`);
+  if(added>0)log(`${added} créneaux ajoutés (min ${CFG.MIN_WORKDAYS}j/sem).`);
 }
 
 function assignAll(){
-  const all=EMPLOYEES.map((_,i)=>i);
-  const keys=sunKeyIdx();
-  fillDay(SUN, CFG.SUN_EXACT, all, keys);
-  fillDay(SAT, CFG.SAT_EXACT, all, []);
-  for(let di=0;di<=4;di++) fillDay(di, CFG.MAX_PER_DAY, all, []);
-  enforceMinDays();
-  log(`Assignation OK. Total : ${grandTotal().toFixed(1)}h`);
+  const all=EMPLOYEES.map((_,i)=>i);const keys=sunKeyIdx();
+  fillDay(SUN,CFG.SUN_EXACT,all,keys);fillDay(SAT,CFG.SAT_EXACT,all,[]);
+  for(let di=0;di<=4;di++)fillDay(di,CFG.MAX_PER_DAY,all,[]);
+  enforceMinDays();log(`Assignation OK. Total : ${grandTotal().toFixed(1)}h`);
 }
 
 function contractMin(){
   EMPLOYEES.forEach((emp,ei)=>{
     for(let di=0;di<7&&empH(ei)<emp.minH;di++){
-      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift!=='REPOS') continue;
-      if(!canAddToDay(di,ei)||!okConsec(ei,di)) continue;
-      const sk=pickShift(ei,di,empH(ei),emp);
-      if(sk) grid[ei][di]={shift:sk,locked:false};
+      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift!=='REPOS')continue;
+      if(!canAddToDay(di,ei)||!okConsec(ei,di))continue;
+      if(isUnavailable(ei,di))continue; // [NOUVEAU]
+      const sk=pickShift(ei,di,empH(ei),emp);if(sk)grid[ei][di]={shift:sk,locked:false};
     }
   });
 }
 
 function tryAdd(){
+  // [NOUVEAU] Prioriser les sous-chargés
   const cands=EMPLOYEES.map((e,i)=>({ei:i,gap:e.maxH-empH(i)})).filter(x=>x.gap>0).sort((a,b)=>b.gap-a.gap);
-  for(const {ei} of cands){
+  for(const{ei}of cands){
     for(let di=0;di<7;di++){
-      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift!=='REPOS') continue;
-      if(!canAddToDay(di,ei)||!okConsec(ei,di)) continue;
+      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift!=='REPOS')continue;
+      if(!canAddToDay(di,ei)||!okConsec(ei,di))continue;
+      if(isUnavailable(ei,di))continue; // [NOUVEAU]
       const sk=pickShift(ei,di,empH(ei),EMPLOYEES[ei]);
       if(sk){grid[ei][di]={shift:sk,locked:false};return true;}
     }
@@ -1078,14 +664,12 @@ function tryAdd(){
 
 function tryRemove(){
   const cands=EMPLOYEES.map((e,i)=>({ei:i,over:empH(i)-e.minH})).filter(x=>x.over>0).sort((a,b)=>b.over-a.over);
-  for(const {ei} of cands){
-    if(empDays(ei)<=CFG.MIN_WORKDAYS) continue;
+  for(const{ei}of cands){
+    if(empDays(ei)<=CFG.MIN_WORKDAYS)continue;
     for(let di=6;di>=0;di--){
-      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift==='REPOS') continue;
-      const cnt=dayCount(di);
-      const min=di===SUN?CFG.SUN_EXACT:di===SAT?CFG.SAT_EXACT:0;
-      if(cnt<=min) continue;
-      grid[ei][di]={shift:'REPOS',locked:false};return true;
+      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift==='REPOS')continue;
+      const cnt=dayCount(di);const min=di===SUN?CFG.SUN_EXACT:di===SAT?CFG.SAT_EXACT:0;
+      if(cnt<=min)continue;grid[ei][di]={shift:'REPOS',locked:false};return true;
     }
   }
   return false;
@@ -1097,26 +681,26 @@ function balance(){
     EMPLOYEES.forEach((emp,ei)=>{
       if(empH(ei)>emp.maxH+0.1){
         for(let di=0;di<7;di++){
-          if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift==='REPOS') continue;
-          const sk=grid[ei][di].shift;
-          const avail=di===SUN?sunKeys():workKeys();
+          if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift==='REPOS')continue;
+          const sk=grid[ei][di].shift;const avail=di===SUN?sunKeys():workKeys();
           const smaller=avail.filter(s=>SHIFTS[s]&&shiftH(s)<shiftH(sk)&&canUseShift(di,s)).sort((a,b)=>shiftH(b)-shiftH(a));
           if(smaller.length){grid[ei][di]={shift:smaller[0],locked:false};changed=true;break;}
         }
       }
     });
-    if(!changed) break;
+    if(!changed)break;
   }
 }
 
 function ensureSunKey(){
   const keys=sunKeyIdx();
-  if(keys.some(ei=>safeShift(ei,SUN)!=='REPOS')) return;
+  if(keys.some(ei=>safeShift(ei,SUN)!=='REPOS'))return;
   for(const ei of keys){
-    if(grid[ei][SUN].locked) continue;
+    if(grid[ei][SUN].locked)continue;
+    if(isUnavailable(ei,SUN))continue; // [NOUVEAU]
     if(dayCount(SUN)>=CFG.SUN_EXACT){
       for(let e2=0;e2<EMPLOYEES.length;e2++){
-        if(keys.includes(e2)||grid[e2][SUN].locked||safeShift(e2,SUN)==='REPOS') continue;
+        if(keys.includes(e2)||grid[e2][SUN].locked||safeShift(e2,SUN)==='REPOS')continue;
         grid[e2][SUN]={shift:'REPOS',locked:false};break;
       }
     }
@@ -1127,34 +711,37 @@ function ensureSunKey(){
 }
 
 function checkConstraints(){
-  const v=[];
-  const t=grandTotal();
-  if(t<CFG.TARGET_MIN) v.push(`Total insuffisant : ${t.toFixed(1)}h (min ${CFG.TARGET_MIN}h)`);
-  if(t>CFG.TARGET_MAX) v.push(`Total excédentaire : ${t.toFixed(1)}h (max ${CFG.TARGET_MAX}h)`);
+  const v=[];const t=grandTotal();
+  if(t<CFG.TARGET_MIN)v.push(`Total insuffisant : ${t.toFixed(1)}h (min ${CFG.TARGET_MIN}h)`);
+  if(t>CFG.TARGET_MAX)v.push(`Total excédentaire : ${t.toFixed(1)}h (max ${CFG.TARGET_MAX}h)`);
   for(let di=0;di<7;di++){
     const cnt=dayCount(di);
-    if(di===SAT&&cnt!==CFG.SAT_EXACT) v.push(`Sam : ${cnt} emp (voulu ${CFG.SAT_EXACT})`);
-    if(di===SUN&&cnt!==CFG.SUN_EXACT) v.push(`Dim : ${cnt} emp (voulu ${CFG.SUN_EXACT})`);
-    if(di<SAT&&cnt>CFG.MAX_PER_DAY) v.push(`${DAYS[di]} : ${cnt} emp (max ${CFG.MAX_PER_DAY})`);
-    // Vérif créneaux dimanche
+    if(di===SAT&&cnt!==CFG.SAT_EXACT)v.push(`Sam : ${cnt} emp (voulu ${CFG.SAT_EXACT})`);
+    if(di===SUN&&cnt!==CFG.SUN_EXACT)v.push(`Dim : ${cnt} emp (voulu ${CFG.SUN_EXACT})`);
+    if(di<SAT&&cnt>CFG.MAX_PER_DAY)v.push(`${DAYS[di]} : ${cnt} emp (max ${CFG.MAX_PER_DAY})`);
     if(di===SUN){
       EMPLOYEES.forEach((_,ei)=>{
         const sk=safeShift(ei,di);
-        if(sk!=='REPOS'&&SHIFTS[sk]&&!SHIFTS[sk].sunOk) v.push(`${EMPLOYEES[ei].name} : créneau non-matin dim (${sk})`);
+        if(sk!=='REPOS'&&SHIFTS[sk]&&!SHIFTS[sk].sunOk)v.push(`${EMPLOYEES[ei].name} : créneau non-matin dim (${sk})`);
       });
     }
     const sc={};
     EMPLOYEES.forEach((_,ei)=>{
       const sk=safeShift(ei,di);if(sk==='REPOS')return;
       sc[sk]=(sc[sk]||0)+1;
-      if(sc[sk]>CFG.MAX_SAME_SHIFT) v.push(`${DAYS[di]} ${sk} : ${sc[sk]} emp (max ${CFG.MAX_SAME_SHIFT})`);
+      if(sc[sk]>CFG.MAX_SAME_SHIFT)v.push(`${DAYS[di]} ${sk} : ${sc[sk]} emp (max ${CFG.MAX_SAME_SHIFT})`);
+    });
+    // [NOUVEAU] Vérif indisponibilités
+    EMPLOYEES.forEach((_,ei)=>{
+      if(safeShift(ei,di)!=='REPOS'&&isUnavailable(ei,di))
+        v.push(`${EMPLOYEES[ei].name} affecté(e) le ${DAYS[di]} mais est indisponible.`);
     });
   }
-  if(!sunKeyIdx().some(ei=>safeShift(ei,SUN)!=='REPOS')) v.push('Dim : aucun employé clé présent');
+  if(!sunKeyIdx().some(ei=>safeShift(ei,SUN)!=='REPOS'))v.push('Dim : aucun employé clé présent');
   EMPLOYEES.forEach((emp,ei)=>{
-    if(maxConsec(ei)>CFG.MAX_CONSEC) v.push(`${emp.name} : ${maxConsec(ei)} jours consécutifs (max ${CFG.MAX_CONSEC})`);
-    if(empH(ei)<emp.minH-0.1&&emp.minH===emp.maxH) v.push(`${emp.name} : contrat non respecté`);
-    if(empDays(ei)<CFG.MIN_WORKDAYS) v.push(`${emp.name} : ${empDays(ei)}j travaillés (min ${CFG.MIN_WORKDAYS})`);
+    if(maxConsec(ei)>CFG.MAX_CONSEC)v.push(`${emp.name} : ${maxConsec(ei)} jours consécutifs (max ${CFG.MAX_CONSEC})`);
+    if(empH(ei)<emp.minH-0.1&&emp.minH===emp.maxH)v.push(`${emp.name} : contrat non respecté`);
+    if(empDays(ei)<CFG.MIN_WORKDAYS)v.push(`${emp.name} : ${empDays(ei)}j travaillés (min ${CFG.MIN_WORKDAYS})`);
   });
   return v;
 }
@@ -1163,15 +750,12 @@ function optimize(){
   log(`Optimisation. Départ : ${grandTotal().toFixed(1)}h`);
   contractMin();
   for(let p=0;p<CFG.PASSES;p++){
-    const cur=grandTotal();
-    if(cur>=CFG.TARGET_MIN&&cur<=CFG.TARGET_MAX) break;
-    if(cur<CFG.TARGET) tryAdd(); else tryRemove();
+    const cur=grandTotal();if(cur>=CFG.TARGET_MIN&&cur<=CFG.TARGET_MAX)break;
+    if(cur<CFG.TARGET)tryAdd();else tryRemove();
   }
-  balance();
-  ensureSunKey();
-  enforceMinDays();
+  balance();ensureSunKey();enforceMinDays();
   const viols=checkConstraints();
-  log(`Résultat : ${grandTotal().toFixed(1)}h — ${viols.length} violation(s).`, viols.length?'warn':'ok');
+  log(`Résultat : ${grandTotal().toFixed(1)}h — ${viols.length} violation(s).`,viols.length?'warn':'ok');
   return viols;
 }
 
@@ -1180,61 +764,40 @@ function optimize(){
 // ════════════════════════════════════════
 function buildTableHeader(){
   const tr=document.getElementById('thead-row');
-  // Supprimer colonnes jours existantes (garder 1e et dernière)
-  while(tr.children.length>2) tr.removeChild(tr.children[1]);
+  while(tr.children.length>2)tr.removeChild(tr.children[1]);
   const lastTh=tr.lastElementChild;
   DAYS.forEach((day,di)=>{
-    const th=document.createElement('th');
-    th.textContent=day;
-    if(di===SAT) th.className='th-we';
-    if(di===SUN) th.className='th-sun';
+    const th=document.createElement('th');th.textContent=day;
+    if(di===SAT)th.className='th-we';if(di===SUN)th.className='th-sun';
     tr.insertBefore(th,lastTh);
   });
 }
 
 function buildTableFooter(){
   const tr=document.getElementById('tfoot-row');
-  while(tr.children.length>2) tr.removeChild(tr.children[1]);
+  while(tr.children.length>2)tr.removeChild(tr.children[1]);
   const lastTd=tr.lastElementChild;
   DAYS.forEach((_,di)=>{
-    const td=document.createElement('td');
-    td.id=`fd${di}`;
-    td.textContent='–';
-    tr.insertBefore(td,lastTd);
+    const td=document.createElement('td');td.id=`fd${di}`;td.textContent='–';tr.insertBefore(td,lastTd);
   });
 }
 
 function buildTable(){
-  buildTableHeader();
-  buildTableFooter();
-  const tbody=document.getElementById('tbody');
-  tbody.innerHTML='';
+  buildTableHeader();buildTableFooter();
+  const tbody=document.getElementById('tbody');tbody.innerHTML='';
   EMPLOYEES.forEach((emp,ei)=>{
     const tr=document.createElement('tr');
-
-    // Colonne nom
     const td0=document.createElement('td');
-    td0.textContent=emp.name;
-    if(emp.fixed){
-      const b=document.createElement('span');
-      b.className='badge-fixed'; b.textContent='fixe';
-      td0.appendChild(b);
-    }
+    td0.innerHTML=`${escHtml(emp.name)}${emp.fixed?'<span class="badge-fixed">fixe</span>':''}`;
     tr.appendChild(td0);
-
-    // Colonnes jours
     DAYS.forEach((_,di)=>{
       const td=document.createElement('td');
-      const sel=buildSelect(ei,di);
-      td.appendChild(sel);
+      td.dataset.ei=ei;td.dataset.di=di;
+      setupDragDrop(td,ei,di); // [NOUVEAU]
+      td.appendChild(buildSelect(ei,di));
       tr.appendChild(td);
     });
-
-    // Colonne total
-    const tdT=document.createElement('td');
-    tdT.id=`tot_${ei}`;
-    tr.appendChild(tdT);
-
+    const tdT=document.createElement('td');tdT.id=`tot_${ei}`;tr.appendChild(tdT);
     tbody.appendChild(tr);
   });
   recalc();
@@ -1242,33 +805,20 @@ function buildTable(){
 
 function buildSelect(ei,di){
   const sel=document.createElement('select');
-  sel.className='day-select';
-  sel.id=`sel_${ei}_${di}`;
-
-  // Options disponibles selon le jour
-  const keys = di===SUN
-    ? ['REPOS',...SHIFT_ORDER.filter(k=>k!=='REPOS'&&SHIFTS[k]&&SHIFTS[k].sunOk)]
-    : SHIFT_ORDER.filter(k=>SHIFTS[k]); // Tous les créneaux existants
-
-  keys.forEach(sk=>{
-    if(!SHIFTS[sk]) return; // sécurité si créneau supprimé entre temps
-    const o=document.createElement('option');
-    o.value=sk; o.textContent=SHIFTS[sk].label;
-    sel.appendChild(o);
-  });
-
-  // Valeur actuelle — si le créneau a été supprimé, retomber sur REPOS
-  const curShift = grid[ei]&&grid[ei][di] ? grid[ei][di].shift : 'REPOS';
-  sel.value = SHIFTS[curShift] ? curShift : 'REPOS';
-
+  sel.className='day-select';sel.id=`sel_${ei}_${di}`;
+  const keys=di===SUN?['REPOS',...SHIFT_ORDER.filter(k=>k!=='REPOS'&&SHIFTS[k]&&SHIFTS[k].sunOk)]:SHIFT_ORDER.filter(k=>SHIFTS[k]);
+  keys.forEach(sk=>{if(!SHIFTS[sk])return;const o=document.createElement('option');o.value=sk;o.textContent=SHIFTS[sk].label;sel.appendChild(o);});
+  const curShift=grid[ei]&&grid[ei][di]?grid[ei][di].shift:'REPOS';
+  sel.value=SHIFTS[curShift]?curShift:'REPOS';
+  // [NOUVEAU] Si indisponible, désactiver
+  if(isUnavailable(ei,di)){sel.className='day-select s-unavail';sel.disabled=true;sel.title=`${EMPLOYEES[ei].name} est indisponible`;return sel;}
   applySelectStyle(sel,ei,di);
-
   sel.addEventListener('change',()=>{
     if(grid[ei][di].locked){sel.value=grid[ei][di].shift;return;}
-    grid[ei][di].shift=sel.value;
-    applySelectStyle(sel,ei,di);
-    recalc();
-    save();
+    // [NOUVEAU] Validation en temps réel
+    const errMsg=validateAssignment(ei,di,sel.value);
+    if(errMsg){sel.value=grid[ei][di].shift;toast('🚫 '+errMsg,'err');return;}
+    grid[ei][di].shift=sel.value;applySelectStyle(sel,ei,di);recalc();save();
   });
   return sel;
 }
@@ -1276,110 +826,342 @@ function buildSelect(ei,di){
 function applySelectStyle(sel,ei,di){
   const sh=grid[ei]&&grid[ei][di]?grid[ei][di].shift:'REPOS';
   const locked=grid[ei]&&grid[ei][di]?grid[ei][di].locked:false;
-  if(locked)            sel.className='day-select s-locked';
-  else if(sh==='REPOS') sel.className='day-select s-repos';
-  else if(di===SUN)     sel.className='day-select s-sun';
-  else                  sel.className='day-select';
+  if(isUnavailable(ei,di))      sel.className='day-select s-unavail';
+  else if(locked)                sel.className='day-select s-locked';
+  else if(sh==='REPOS')          sel.className='day-select s-repos';
+  else if(di===SUN)              sel.className='day-select s-sun';
+  else                           sel.className='day-select';
 }
 
 function syncSelects(){
   EMPLOYEES.forEach((_,ei)=>DAYS.forEach((__,di)=>{
-    const sel=document.getElementById(`sel_${ei}_${di}`);
-    if(!sel) return;
-    const sh=safeShift(ei,di);
-    sel.value=SHIFTS[sh]?sh:'REPOS';
+    const sel=document.getElementById(`sel_${ei}_${di}`);if(!sel)return;
+    const sh=safeShift(ei,di);sel.value=SHIFTS[sh]?sh:'REPOS';
     applySelectStyle(sel,ei,di);
+    // [NOUVEAU] Gérer indispo au sync
+    if(isUnavailable(ei,di)){sel.disabled=true;sel.className='day-select s-unavail';}
+    else sel.disabled=false;
   }));
+}
+
+// ════════════════════════════════════════
+//  [NOUVEAU] DRAG & DROP NATIF
+// ════════════════════════════════════════
+let dragSrc=null; // {ei, di, shift}
+
+/**
+ * Configure le drag & drop sur une cellule td.
+ * Permet d'échanger les créneaux entre deux cellules (swap).
+ */
+function setupDragDrop(td,ei,di){
+  td.setAttribute('draggable','true');
+
+  td.addEventListener('dragstart',e=>{
+    if(grid[ei][di].locked||isUnavailable(ei,di)){e.preventDefault();return;}
+    dragSrc={ei,di,shift:safeShift(ei,di)};
+    td.classList.add('drag-source');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',`${ei}:${di}`);
+  });
+
+  td.addEventListener('dragend',()=>{
+    td.classList.remove('drag-source');dragSrc=null;
+    document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  });
+
+  td.addEventListener('dragover',e=>{
+    if(!dragSrc)return;
+    const dEi=parseInt(td.dataset.ei),dDi=parseInt(td.dataset.di);
+    if(dragSrc.ei===dEi&&dragSrc.di===dDi)return;
+    if(grid[dEi]&&grid[dEi][dDi]&&grid[dEi][dDi].locked)return;
+    if(isUnavailable(dEi,dDi))return;
+    e.preventDefault();e.dataTransfer.dropEffect='move';
+    document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    td.classList.add('drag-over');
+  });
+
+  td.addEventListener('dragleave',()=>td.classList.remove('drag-over'));
+
+  td.addEventListener('drop',e=>{
+    e.preventDefault();td.classList.remove('drag-over');if(!dragSrc)return;
+    const dEi=parseInt(td.dataset.ei),dDi=parseInt(td.dataset.di);
+    if(dragSrc.ei===dEi&&dragSrc.di===dDi)return;
+    if(grid[dEi][dDi].locked||isUnavailable(dEi,dDi))return;
+    const srcSh=dragSrc.shift,dstSh=safeShift(dEi,dDi);
+    // Valider le créneau source dans la destination
+    const err=validateAssignment(dEi,dDi,srcSh);
+    if(err){toast('🚫 '+err,'err');return;}
+    // Swap
+    grid[dEi][dDi].shift=srcSh;grid[dragSrc.ei][dragSrc.di].shift=dstSh;
+    const s1=document.getElementById(`sel_${dragSrc.ei}_${dragSrc.di}`);
+    const s2=document.getElementById(`sel_${dEi}_${dDi}`);
+    if(s1){s1.value=dstSh;applySelectStyle(s1,dragSrc.ei,dragSrc.di);}
+    if(s2){s2.value=srcSh;applySelectStyle(s2,dEi,dDi);}
+    recalc();save();
+    toast(`✓ ${EMPLOYEES[dragSrc.ei].name} ↔ ${EMPLOYEES[dEi].name}`,'ok');
+  });
+
+  // [NOUVEAU] Support tactile mobile (long press + glisser)
+  let touchTimer=null,touchDragActive=false,touchClone=null,touchSrc=null;
+
+  td.addEventListener('touchstart',e=>{
+    if(grid[ei][di].locked||isUnavailable(ei,di))return;
+    const sh=safeShift(ei,di);if(sh==='REPOS')return;
+    touchTimer=setTimeout(()=>{
+      touchDragActive=true;touchSrc={ei,di,shift:sh};
+      td.classList.add('drag-source');
+      touchClone=document.createElement('div');
+      touchClone.textContent=SHIFTS[sh]?SHIFTS[sh].label:sh;
+      touchClone.style.cssText='position:fixed;background:#111;color:#fff;padding:6px 12px;border-radius:6px;font-size:.75rem;font-weight:600;z-index:9999;pointer-events:none;opacity:.9;';
+      document.body.appendChild(touchClone);
+    },500);
+  },{passive:true});
+
+  td.addEventListener('touchend',()=>{clearTimeout(touchTimer);if(!touchDragActive){touchDragActive=false;return;}},{passive:true});
+  td.addEventListener('touchmove',()=>{if(!touchDragActive)clearTimeout(touchTimer);},{passive:true});
+
+  document.addEventListener('touchmove',e=>{
+    if(!touchDragActive||!touchClone)return;
+    const t=e.touches[0];
+    touchClone.style.left=(t.clientX-30)+'px';touchClone.style.top=(t.clientY-20)+'px';
+    document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    const ttd=el&&el.closest('td[data-ei]');if(ttd)ttd.classList.add('drag-over');
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    if(!touchDragActive||!touchSrc)return;
+    if(touchClone){touchClone.remove();touchClone=null;}
+    td.classList.remove('drag-source');
+    document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));
+    const t=e.changedTouches[0];
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    const ttd=el&&el.closest('td[data-ei]');
+    if(ttd){
+      const dEi=parseInt(ttd.dataset.ei),dDi=parseInt(ttd.dataset.di);
+      if(!isNaN(dEi)&&!isNaN(dDi)&&(dEi!==touchSrc.ei||dDi!==touchSrc.di)){
+        if(!grid[dEi][dDi].locked&&!isUnavailable(dEi,dDi)){
+          const err=validateAssignment(dEi,dDi,touchSrc.shift);
+          if(err){toast('🚫 '+err,'err');}else{
+            const dstSh=safeShift(dEi,dDi);
+            grid[dEi][dDi].shift=touchSrc.shift;grid[touchSrc.ei][touchSrc.di].shift=dstSh;
+            const sa=document.getElementById(`sel_${touchSrc.ei}_${touchSrc.di}`);
+            const sb=document.getElementById(`sel_${dEi}_${dDi}`);
+            if(sa){sa.value=dstSh;applySelectStyle(sa,touchSrc.ei,touchSrc.di);}
+            if(sb){sb.value=touchSrc.shift;applySelectStyle(sb,dEi,dDi);}
+            recalc();save();toast(`✓ Déplacé vers ${EMPLOYEES[dEi].name}`,'ok');
+          }
+        }
+      }
+    }
+    touchDragActive=false;touchSrc=null;
+  },{passive:true});
 }
 
 // ════════════════════════════════════════
 //  RECALCUL STATS
 // ════════════════════════════════════════
 function recalc(){
-  let gH=0, actE=0;
-  const dH=new Array(7).fill(0);
-  const dC=new Array(7).fill(0);
-
+  let gH=0,actE=0;
+  const dH=new Array(7).fill(0),dC=new Array(7).fill(0);
   EMPLOYEES.forEach((emp,ei)=>{
     let rH=0;
-    DAYS.forEach((_,di)=>{
-      const h2=shiftH(safeShift(ei,di));
-      rH+=h2; dH[di]+=h2;
-      if(safeShift(ei,di)!=='REPOS') dC[di]++;
-    });
-    gH+=rH; if(rH>0)actE++;
-    const el=document.getElementById(`tot_${ei}`);
-    if(el) el.innerHTML=chip(rH,emp.minH,emp.maxH);
+    DAYS.forEach((_,di)=>{const h2=shiftH(safeShift(ei,di));rH+=h2;dH[di]+=h2;if(safeShift(ei,di)!=='REPOS')dC[di]++;});
+    gH+=rH;if(rH>0)actE++;
+    const el=document.getElementById(`tot_${ei}`);if(el)el.innerHTML=chip(rH,emp.minH,emp.maxH);
   });
-
   DAYS.forEach((_,di)=>{
-    const el=document.getElementById(`fd${di}`); if(!el)return;
-    const lim=dayLimit(di);
-    const cls=dC[di]>lim?'fc-warn':'fc-ok';
+    const el=document.getElementById(`fd${di}`);if(!el)return;
+    const lim=dayLimit(di);const cls=dC[di]>lim?'fc-warn':'fc-ok';
     el.innerHTML=`<div class="foot-cell"><span>${dH[di].toFixed(1)}h</span><span class="foot-count ${cls}">${dC[di]} emp</span></div>`;
   });
-
-  const fg=document.getElementById('fd-grand');
-  if(fg) fg.textContent=gH.toFixed(1)+' h';
-
-  const st=document.getElementById('st-total');
-  if(st){st.textContent=gH.toFixed(1)+' h';st.className='stat-val '+valCls(gH);}
-
-  const sd=document.getElementById('st-diff');
-  if(sd){const d=gH-CFG.TARGET;sd.textContent=(d>=0?'+':'')+d.toFixed(1)+' h';sd.className='stat-val '+valCls(gH);}
-
-  const sa=document.getElementById('st-emp'); if(sa) sa.textContent=actE;
-
+  const fg=document.getElementById('fd-grand');if(fg)fg.textContent=gH.toFixed(1)+' h';
+  const st=document.getElementById('st-total');if(st){st.textContent=gH.toFixed(1)+' h';st.className='stat-val '+valCls(gH);}
+  const sd=document.getElementById('st-diff');if(sd){const d=gH-CFG.TARGET;sd.textContent=(d>=0?'+':'')+d.toFixed(1)+' h';sd.className='stat-val '+valCls(gH);}
+  const sa=document.getElementById('st-emp');if(sa)sa.textContent=actE;
   const sc=document.getElementById('st-viol');
   if(sc){const v=checkConstraints();sc.textContent=v.length===0?'✓ 0':v.length+' ⚠';sc.className='stat-val '+(v.length===0?'sv-ok':'sv-warn');}
+  renderDayNeedsBar(dC); // [NOUVEAU]
+}
+
+/**
+ * [NOUVEAU] Barre de couverture par jour selon les besoins définis.
+ */
+function renderDayNeedsBar(dC){
+  const bar=document.getElementById('day-needs-bar');if(!bar)return;
+  bar.innerHTML='';
+  DAYS.forEach((day,di)=>{
+    const need=dayNeeds[di];const count=dC?dC[di]:dayCount(di);
+    let cls='day-need-pill';
+    if(count<need.min)cls+=' dnp-under';else if(count>need.max)cls+=' dnp-over';else cls+=' dnp-ok';
+    const icon=count<need.min?'⚠':count>need.max?'↑':'✓';
+    const pill=document.createElement('div');pill.className=cls;
+    pill.innerHTML=`<span class="dnp-day">${DAYS_SHORT[di]}</span><span class="dnp-count">${icon} ${count}</span><span class="dnp-req">${need.min}–${need.max}</span>`;
+    pill.title=`${day} : ${count} présent(s) · besoin ${need.min}–${need.max}`;
+    bar.appendChild(pill);
+  });
 }
 
 function chip(h2,mn,mx){
   const v=h2.toFixed(1)+' h';
-  if(h2===0)       return `<span class="chip c-zero">${v}</span>`;
-  if(h2<mn-0.1)    return `<span class="chip c-under">${v} ↓</span>`;
-  if(h2>mx+0.1)    return `<span class="chip c-over">${v} ↑</span>`;
-  return `<span class="chip c-ok">${v}</span>`;
+  if(h2===0)return`<span class="chip c-zero">${v}</span>`;
+  if(h2<mn-0.1)return`<span class="chip c-under">${v} ↓</span>`;
+  if(h2>mx+0.1)return`<span class="chip c-over">${v} ↑</span>`;
+  return`<span class="chip c-ok">${v}</span>`;
 }
-function valCls(h2){
-  if(h2<CFG.TARGET_MIN) return 'sv-danger';
-  if(h2<=CFG.TARGET_MAX) return 'sv-ok';
-  return 'sv-warn';
-}
+function valCls(h2){if(h2<CFG.TARGET_MIN)return'sv-danger';if(h2<=CFG.TARGET_MAX)return'sv-ok';return'sv-warn';}
 
 function renderLogs(){
-  const bar=document.getElementById('log-bar');
-  if(!bar) return;
-  bar.innerHTML=logs.slice(-8).map(l=>
-    `<div class="log-entry"><div class="log-dot d-${l.type}"></div><span>${l.msg}</span></div>`
-  ).join('');
+  const bar=document.getElementById('log-bar');if(!bar)return;
+  bar.innerHTML=logs.slice(-8).map(l=>`<div class="log-entry"><div class="log-dot d-${l.type}"></div><span>${l.msg}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════
+//  [NOUVEAU] MODE VÉRIFICATION MANAGER
+// ════════════════════════════════════════
+
+/**
+ * Construit le rapport de vérification manager :
+ * résumé global, couverture par jour, état par employé, violations.
+ */
+function buildManagerReport(){
+  const viols=checkConstraints();const sections=[];
+  const totalH=grandTotal();const diffH=totalH-CFG.TARGET;const globalOk=viols.length===0;
+  sections.push({title:'Résumé global',items:[{ok:globalOk,text:globalOk?`✓ Planning valide — ${totalH.toFixed(1)}h (objectif ${CFG.TARGET}h, écart ${diffH>=0?'+':''}${diffH.toFixed(1)}h)`:`${viols.length} problème(s) détecté(s) — ${totalH.toFixed(1)}h total`}]});
+
+  // Couverture par jour vs besoins
+  const dayItems=DAYS.map((day,di)=>{
+    const cnt=dayCount(di);const need=dayNeeds[di];
+    if(cnt<need.min)return{ok:false,warn:false,text:`${day} : manque ${need.min-cnt} personne(s) (${cnt}/${need.min} min)`};
+    if(cnt>need.max)return{ok:false,warn:true,text:`${day} : surcharge (${cnt}/${need.max} max)`};
+    return{ok:true,text:`${day} : ${cnt} employé(s) ✓`};
+  });
+  sections.push({title:'Couverture par jour',items:dayItems});
+
+  // État par employé
+  const empItems=EMPLOYEES.map((emp,ei)=>{
+    const h=empH(ei);const consec=maxConsec(ei);const days=empDays(ei);const problems=[];
+    if(h<emp.minH-0.1)problems.push(`sous le contrat (${h.toFixed(1)}h / ${emp.minH}h min)`);
+    if(h>emp.maxH+0.1)problems.push(`dépasse le contrat (${h.toFixed(1)}h / ${emp.maxH}h max)`);
+    if(consec>CFG.MAX_CONSEC)problems.push(`${consec} jours consécutifs (max ${CFG.MAX_CONSEC})`);
+    if(days<CFG.MIN_WORKDAYS)problems.push(`${days}j travaillés (min ${CFG.MIN_WORKDAYS})`);
+    DAYS.forEach((_,di)=>{if(safeShift(ei,di)!=='REPOS'&&isUnavailable(ei,di))problems.push(`affecté(e) le ${DAYS[di]} (indisponible)`);});
+    if(!problems.length)return{ok:true,text:`${emp.name} — ${h.toFixed(1)}h, ${days}j ✓`};
+    return{ok:false,text:`${emp.name} : ${problems.join(' · ')}`};
+  });
+  sections.push({title:'Situation par employé',items:empItems});
+
+  if(viols.length>0)sections.push({title:'Détail des violations',items:viols.map(v=>({ok:false,text:v}))});
+  return sections;
+}
+
+function renderManagerReport(){
+  const body=document.getElementById('modal-check-body');if(!body)return;
+  const sections=buildManagerReport();
+  body.innerHTML=sections.map(sec=>`
+    <div class="check-section">
+      <div class="check-section-title">${escHtml(sec.title)}</div>
+      ${sec.items.map(item=>`
+        <div class="check-item">
+          <span class="check-icon" style="color:${item.ok?'var(--green)':(item.warn?'var(--amber)':'var(--red)')}">${item.ok?'✓':(item.warn?'⚠':'✗')}</span>
+          <span class="check-text" style="color:${item.ok?'var(--text)':(item.warn?'var(--amber)':'var(--red)')}">${escHtml(item.text)}</span>
+        </div>
+      `).join('')}
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════
+//  [NOUVEAU] ACTIONS RAPIDES
+// ════════════════════════════════════════
+
+/**
+ * Complète les heures des employés sous leur minimum contractuel
+ * en ajoutant des créneaux sur les jours disponibles.
+ */
+function actionCompleteHours(){
+  let changed=0;
+  EMPLOYEES.forEach((emp,ei)=>{
+    for(let di=0;di<7&&empH(ei)<emp.minH-0.1;di++){
+      if(!grid[ei][di]||grid[ei][di].locked||grid[ei][di].shift!=='REPOS')continue;
+      if(isUnavailable(ei,di)||!canAddToDay(di,ei)||!okConsec(ei,di))continue;
+      const sk=pickShift(ei,di,empH(ei),emp);
+      if(sk){grid[ei][di]={shift:sk,locked:false};changed++;}
+    }
+  });
+  syncSelects();recalc();save();
+  toast(changed>0?`✓ ${changed} créneau(x) ajouté(s).`:'✓ Contrats déjà respectés.','ok');
+  if(changed>0)log(`Action : ${changed} créneaux ajoutés (complément).`,'ok');
+  renderLogs();
+}
+
+/**
+ * Rééquilibre les weekends entre employés et redistribue les charges.
+ */
+function actionRebalance(){
+  const ov=document.getElementById('gen-overlay');ov.classList.add('active');
+  setTimeout(()=>{
+    const weCount=EMPLOYEES.map((_,ei)=>[SAT,SUN].filter(di=>safeShift(ei,di)!=='REPOS').length);
+    const avgWe=weCount.reduce((s,v)=>s+v,0)/EMPLOYEES.length;
+    EMPLOYEES.forEach((emp,ei)=>{
+      if(weCount[ei]>Math.ceil(avgWe)&&!emp.fixed){
+        [SAT,SUN].forEach(di=>{
+          if(safeShift(ei,di)!=='REPOS'&&!grid[ei][di].locked){
+            const cnt=dayCount(di);const min=di===SUN?CFG.SUN_EXACT:CFG.SAT_EXACT;
+            if(cnt>min&&empDays(ei)>CFG.MIN_WORKDAYS)grid[ei][di]={shift:'REPOS',locked:false};
+          }
+        });
+      }
+    });
+    const all=EMPLOYEES.map((_,i)=>i);
+    fillDay(SAT,CFG.SAT_EXACT,all,[]);fillDay(SUN,CFG.SUN_EXACT,all,sunKeyIdx());
+    contractMin();balance();syncSelects();recalc();save();
+    ov.classList.remove('active');
+    toast('⚖️ Planning rééquilibré.','ok');log('Action : rééquilibrage weekends.','ok');renderLogs();
+  },100);
+}
+
+/**
+ * Corrige automatiquement les erreurs simples :
+ * indisponibilités, créneaux dim interdits, dépassements horaires.
+ */
+function actionAutoFix(){
+  let fixed=0;
+  EMPLOYEES.forEach((emp,ei)=>{
+    DAYS.forEach((_,di)=>{
+      if(!grid[ei][di]||grid[ei][di].locked)return;
+      const sk=grid[ei][di].shift;if(sk==='REPOS')return;
+      // Correction indisponible
+      if(isUnavailable(ei,di)){grid[ei][di].shift='REPOS';fixed++;log(`Correction : ${emp.name} ${DAYS[di]} → REPOS (indispo).`,'warn');return;}
+      // Correction créneau dim interdit
+      if(di===SUN&&SHIFTS[sk]&&!SHIFTS[sk].sunOk){const alt=sunKeys()[0];grid[ei][di].shift=alt||'REPOS';fixed++;log(`Correction : ${emp.name} dim → ${grid[ei][di].shift}.`,'warn');return;}
+      // Correction dépassement heures max
+      if(empH(ei)>emp.maxH+0.1){
+        const avail=di===SUN?sunKeys():workKeys();
+        const smaller=avail.filter(s=>SHIFTS[s]&&shiftH(s)<shiftH(sk)&&canUseShift(di,s)).sort((a,b)=>shiftH(b)-shiftH(a));
+        if(smaller.length){grid[ei][di].shift=smaller[0];fixed++;}else{grid[ei][di].shift='REPOS';fixed++;}
+        log(`Correction : ${emp.name} ${DAYS[di]} allégé.`,'warn');
+      }
+    });
+  });
+  syncSelects();recalc();save();renderLogs();
+  toast(fixed>0?`🔧 ${fixed} correction(s) appliquée(s).`:'✓ Aucune correction nécessaire.','ok');
 }
 
 // ════════════════════════════════════════
 //  MENU DÉROULANT
 // ════════════════════════════════════════
 function toggleMenu(){
-  const toggle=document.getElementById('menu-toggle');
-  const menu=document.getElementById('dd-menu');
-  const overlay=document.getElementById('dd-overlay');
-  const open=menu.classList.toggle('open');
-  toggle.classList.toggle('open',open);
-  overlay.classList.toggle('open',open);
+  const toggle=document.getElementById('menu-toggle');const menu=document.getElementById('dd-menu');const overlay=document.getElementById('dd-overlay');
+  const open=menu.classList.toggle('open');toggle.classList.toggle('open',open);overlay.classList.toggle('open',open);
 }
-function closeMenu(){
-  document.getElementById('dd-menu').classList.remove('open');
-  document.getElementById('menu-toggle').classList.remove('open');
-  document.getElementById('dd-overlay').classList.remove('open');
-}
+function closeMenu(){document.getElementById('dd-menu').classList.remove('open');document.getElementById('menu-toggle').classList.remove('open');document.getElementById('dd-overlay').classList.remove('open');}
 function menuAction(action){
   closeMenu();
   switch(action){
-    case 'employes': openSidebar('employes'); break;
-    case 'horaires': openSidebar('horaires'); break;
-    case 'unlock':   toggleUnlock(); break;
-    case 'csv':      exportCSV(); break;
-    case 'print':    window.print(); break;
-    case 'reset':    resetPlanning(); break;
+    case 'employes':openSidebar('employes');break;case 'horaires':openSidebar('horaires');break;
+    case 'besoins':openSidebar('besoins');break;case 'indispos':openSidebar('indispos');break;
+    case 'check':openModal('modal-check');break;
+    case 'unlock':toggleUnlock();break;case 'csv':exportCSV();break;case 'print':window.print();break;case 'reset':resetPlanning();break;
   }
 }
 
@@ -1387,43 +1169,37 @@ function menuAction(action){
 //  PANNEAU LATÉRAL
 // ════════════════════════════════════════
 let currentTab='employes';
-function openSidebar(tab){
-  document.getElementById('sb-backdrop').classList.add('open');
-  document.getElementById('sidebar').classList.add('open');
-  switchTab(tab||currentTab);
-}
-function closeSidebar(){
-  document.getElementById('sb-backdrop').classList.remove('open');
-  document.getElementById('sidebar').classList.remove('open');
-}
+function openSidebar(tab){document.getElementById('sb-backdrop').classList.add('open');document.getElementById('sidebar').classList.add('open');switchTab(tab||currentTab);}
+function closeSidebar(){document.getElementById('sb-backdrop').classList.remove('open');document.getElementById('sidebar').classList.remove('open');}
 function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  document.querySelector(`.stab[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  if(tab==='employes') renderEmpList();
-  if(tab==='horaires') renderShiftList();
+  const btn=document.querySelector(`.stab[onclick="switchTab('${tab}')"]`);if(btn)btn.classList.add('active');
+  const content=document.getElementById(`tab-${tab}`);if(content)content.classList.add('active');
+  if(tab==='employes')renderEmpList();
+  if(tab==='horaires')renderShiftList();
+  if(tab==='besoins')renderBesoinsForm();
+  if(tab==='indispos')renderIndispoTab();
 }
 
-// ── Employés ────────────────────────────
+// ── Employés ──
 function renderEmpList(){
-  const ul=document.getElementById('emp-list');
-  ul.innerHTML='';
+  const ul=document.getElementById('emp-list');ul.innerHTML='';
   document.getElementById('emp-count').textContent=EMPLOYEES.length;
   EMPLOYEES.forEach((emp,ei)=>{
-    const div=document.createElement('div');
-    div.className='emp-card';
+    const unavailDays=(unavailability[ei]||[]).map(di=>DAYS_SHORT[di]).join(',');
+    const div=document.createElement('div');div.className='emp-card';
     div.innerHTML=`
       <div class="emp-card-info">
         <div class="emp-card-name">
           ${escHtml(emp.name)}
           ${emp.fixed?'<span class="badge-fixed">fixe</span>':''}
+          ${unavailDays?`<span class="badge-unavail">🚫${unavailDays}</span>`:''}
         </div>
-        <div class="emp-card-meta">${emp.minH}h min · ${emp.maxH}h max / sem.</div>
+        <div class="emp-card-meta">${emp.minH}h min · ${emp.maxH}h max · ${empH(ei).toFixed(1)}h planifiées</div>
       </div>
-      <button class="btn-remove" onclick="removeEmployee(${ei})" title="Supprimer">✕</button>
-    `;
+      <button class="btn-remove" onclick="removeEmployee(${ei})" title="Supprimer">✕</button>`;
     ul.appendChild(div);
   });
 }
@@ -1433,54 +1209,34 @@ function addEmployee(){
   const minH=parseFloat(document.getElementById('inp-min').value)||15;
   const maxH=parseFloat(document.getElementById('inp-max').value)||38;
   const fixed=document.getElementById('inp-fixed').value==='1';
-  if(!name){toast('⚠ Entrez un nom.'); return;}
-  if(EMPLOYEES.find(e=>e.name.toLowerCase()===name.toLowerCase())){toast('⚠ Cet employé existe déjà.'); return;}
-  if(minH>maxH){toast('⚠ Heures min > max.'); return;}
+  if(!name){toast('⚠ Entrez un nom.');return;}
+  if(EMPLOYEES.find(e=>e.name.toLowerCase()===name.toLowerCase())){toast('⚠ Cet employé existe déjà.');return;}
+  if(minH>maxH){toast('⚠ Heures min > max.');return;}
   EMPLOYEES.push({name,minH,maxH,fixed});
   document.getElementById('inp-name').value='';
-  // Reconstruire la grille proprement
   const newEi=EMPLOYEES.length-1;
   grid.push(DAYS.map(()=>({shift:'REPOS',locked:false})));
-  // Appliquer les fixes si employé fixe
-  if(fixed){
-    for(let di=0;di<=5;di++) grid[newEi][di]={shift:'6h–12h',locked:!fixesUnlocked};
-    grid[newEi][6]={shift:'REPOS',locked:!fixesUnlocked};
-  }
-  save();
-  renderEmpList();
-  buildTable();
-  toast(`✓ ${name} ajouté.`);
+  unavailability[newEi]=[]; // [NOUVEAU]
+  if(fixed){for(let di=0;di<=5;di++)grid[newEi][di]={shift:'6h–12h',locked:!fixesUnlocked};grid[newEi][6]={shift:'REPOS',locked:!fixesUnlocked};}
+  save();renderEmpList();buildTable();toast(`✓ ${name} ajouté.`);
 }
 
 function removeEmployee(ei){
-  const emp=EMPLOYEES[ei];
-  if(!confirm(`Supprimer "${emp.name}" du planning ?`)) return;
-  EMPLOYEES.splice(ei,1);
-  grid.splice(ei,1);
-  applyFixed(); // recalculer les locks après suppression
-  save();
-  renderEmpList();
-  buildTable();
-  toast(`${emp.name} retiré.`);
+  const emp=EMPLOYEES[ei];if(!confirm(`Supprimer "${emp.name}" du planning ?`))return;
+  EMPLOYEES.splice(ei,1);grid.splice(ei,1);
+  // [NOUVEAU] Reconstruire les indispos après suppression
+  const newU={};Object.keys(unavailability).forEach(k=>{const ki=parseInt(k);if(ki<ei)newU[ki]=unavailability[ki];else if(ki>ei)newU[ki-1]=unavailability[ki];});
+  unavailability=newU;
+  applyFixed();save();renderEmpList();buildTable();toast(`${emp.name} retiré.`);
 }
 
-// ── Horaires ─────────────────────────────
+// ── Horaires ──
 function renderShiftList(){
-  const ul=document.getElementById('shift-list');
-  ul.innerHTML='';
+  const ul=document.getElementById('shift-list');ul.innerHTML='';
   SHIFT_ORDER.forEach(sk=>{
-    if(!SHIFTS[sk]) return;
-    const sh=SHIFTS[sk];
-    const isRepos=sk==='REPOS';
-    const div=document.createElement('div');
-    div.className='shift-card';
-    div.innerHTML=`
-      <div style="flex:1">
-        <div class="shift-card-label">${escHtml(sh.label)}</div>
-        <div class="shift-card-hours">${sh.h}h${sh.sunOk&&!isRepos?' · ☀ dim OK':''}</div>
-      </div>
-      ${!isRepos?`<button class="btn-remove" onclick="removeShift('${sk}')" title="Supprimer">✕</button>`:'<span style="color:var(--text3);font-size:0.7rem">—</span>'}
-    `;
+    if(!SHIFTS[sk])return;const sh=SHIFTS[sk];const isRepos=sk==='REPOS';
+    const div=document.createElement('div');div.className='shift-card';
+    div.innerHTML=`<div style="flex:1"><div class="shift-card-label">${escHtml(sh.label)}</div><div class="shift-card-hours">${sh.h}h${sh.sunOk&&!isRepos?' · ☀ dim OK':''}</div></div>${!isRepos?`<button class="btn-remove" onclick="removeShift('${sk}')" title="Supprimer">✕</button>`:'<span style="color:var(--text3);font-size:.7rem">—</span>'}`;
     ul.appendChild(div);
   });
 }
@@ -1489,167 +1245,182 @@ function addShift(){
   const rawLabel=document.getElementById('sh-label').value.trim();
   const h2=parseFloat(document.getElementById('sh-hours').value);
   const sunOk=document.getElementById('sh-sun').value==='1';
-  if(!rawLabel){toast('⚠ Entrez un libellé.'); return;}
-  // Clé unique basée sur le libellé
-  const key=rawLabel;
-  if(SHIFTS[key]){toast('⚠ Ce créneau existe déjà.'); return;}
-  if(isNaN(h2)||h2<=0||h2>24){toast('⚠ Durée invalide.'); return;}
-  // Ajouter
-  SHIFTS[key]={label:rawLabel, h:h2, sunOk};
-  SHIFT_ORDER.push(key);
-  // Mettre à jour les selects existants sans reconstruire tout le tableau
-  _refreshAllSelects();
-  document.getElementById('sh-label').value='';
-  renderShiftList();
-  save();
-  recalc();
+  if(!rawLabel){toast('⚠ Entrez un libellé.');return;}
+  const key=rawLabel;if(SHIFTS[key]){toast('⚠ Ce créneau existe déjà.');return;}
+  if(isNaN(h2)||h2<=0||h2>24){toast('⚠ Durée invalide.');return;}
+  SHIFTS[key]={label:rawLabel,h:h2,sunOk};SHIFT_ORDER.push(key);
+  _refreshAllSelects();document.getElementById('sh-label').value='';renderShiftList();save();recalc();
   toast(`✓ Créneau "${rawLabel}" ajouté.`);
 }
 
 function removeShift(sk){
-  if(sk==='REPOS'){toast('⚠ REPOS ne peut pas être supprimé.'); return;}
-  if(!confirm(`Supprimer le créneau "${SHIFTS[sk].label}" ?\nLes employés qui l'ont se retrouveront en REPOS.`)) return;
-  // Remplacer dans la grille
-  EMPLOYEES.forEach((_,ei)=>{
-    DAYS.forEach((__,di)=>{
-      if(grid[ei]&&grid[ei][di]&&grid[ei][di].shift===sk){
-        grid[ei][di].shift='REPOS';
-      }
-    });
-  });
-  delete SHIFTS[sk];
-  SHIFT_ORDER=SHIFT_ORDER.filter(k=>k!==sk);
-  _refreshAllSelects();
-  renderShiftList();
-  syncSelects();
-  save();
-  recalc();
-  toast(`Créneau supprimé. Relancez Générer pour réoptimiser.`);
+  if(sk==='REPOS'){toast('⚠ REPOS ne peut pas être supprimé.');return;}
+  if(!confirm(`Supprimer le créneau "${SHIFTS[sk].label}" ?\nLes employés qui l'ont se retrouveront en REPOS.`))return;
+  EMPLOYEES.forEach((_,ei)=>DAYS.forEach((__,di)=>{if(grid[ei]&&grid[ei][di]&&grid[ei][di].shift===sk)grid[ei][di].shift='REPOS';}));
+  delete SHIFTS[sk];SHIFT_ORDER=SHIFT_ORDER.filter(k=>k!==sk);
+  _refreshAllSelects();renderShiftList();syncSelects();save();recalc();toast(`Créneau supprimé.`);
 }
 
-// Reconstruire uniquement les options des selects (sans reconstruire tout le tableau)
 function _refreshAllSelects(){
-  EMPLOYEES.forEach((_,ei)=>{
-    DAYS.forEach((__,di)=>{
-      const old=document.getElementById(`sel_${ei}_${di}`);
-      if(!old) return;
-      const newSel=buildSelect(ei,di);
-      old.parentNode.replaceChild(newSel,old);
-    });
-  });
+  EMPLOYEES.forEach((_,ei)=>DAYS.forEach((__,di)=>{
+    const old=document.getElementById(`sel_${ei}_${di}`);if(!old)return;
+    const newSel=buildSelect(ei,di);old.parentNode.replaceChild(newSel,old);
+  }));
 }
 
 // ════════════════════════════════════════
-//  ACTIONS GLOBALES
+//  [NOUVEAU] ONGLET BESOINS
+// ════════════════════════════════════════
+
+function renderBesoinsForm(){
+  const container=document.getElementById('besoins-form');if(!container)return;
+  container.innerHTML=DAYS.map((day,di)=>`
+    <div class="form-group">
+      <label class="form-label">${day}</label>
+      <div class="form-row">
+        <div><label class="form-label" style="font-size:.65rem;">Min employés</label><input class="form-input" id="need-min-${di}" type="number" min="0" max="20" value="${dayNeeds[di].min}" inputmode="numeric"></div>
+        <div><label class="form-label" style="font-size:.65rem;">Max employés</label><input class="form-input" id="need-max-${di}" type="number" min="0" max="20" value="${dayNeeds[di].max}" inputmode="numeric"></div>
+      </div>
+    </div>`).join('');
+}
+
+function saveBesoins(){
+  DAYS.forEach((_,di)=>{
+    const minEl=document.getElementById(`need-min-${di}`);const maxEl=document.getElementById(`need-max-${di}`);
+    if(minEl&&maxEl)dayNeeds[di]={min:parseInt(minEl.value)||0,max:parseInt(maxEl.value)||99};
+  });
+  save();recalc();toast('✓ Besoins enregistrés.','ok');
+}
+
+// ════════════════════════════════════════
+//  [NOUVEAU] ONGLET INDISPONIBILITÉS
+// ════════════════════════════════════════
+
+function renderIndispoTab(){
+  const sel=document.getElementById('indispo-emp-sel');if(!sel)return;
+  sel.innerHTML=EMPLOYEES.map((emp,ei)=>`<option value="${ei}">${escHtml(emp.name)}</option>`).join('');
+  renderIndispoEditor();
+}
+
+function renderIndispoEditor(){
+  const sel=document.getElementById('indispo-emp-sel');const editor=document.getElementById('indispo-editor');if(!sel||!editor)return;
+  const ei=parseInt(sel.value);const empName=EMPLOYEES[ei]?EMPLOYEES[ei].name:'';
+  const cur=unavailability[ei]||[];
+  editor.innerHTML=`
+    <div class="sep-label" style="margin-top:0;">Jours indisponibles — ${escHtml(empName)}</div>
+    <p style="font-size:.72rem;color:var(--text3);margin-bottom:10px;">Touchez un jour pour le bloquer (violet = indisponible).</p>
+    <div class="unavail-grid">
+      ${DAYS.map((day,di)=>`<button class="unavail-day-btn${cur.includes(di)?' active':''}" onclick="toggleUnavailDay(${ei},${di},this)">${DAYS_SHORT[di]}</button>`).join('')}
+    </div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--text2);">Bloqué(s) : <strong>${cur.length===0?'aucun':cur.map(d=>DAYS[d]).join(', ')}</strong></div>`;
+}
+
+/**
+ * Bascule un jour d'indisponibilité pour un employé.
+ */
+function toggleUnavailDay(ei,di,btn){
+  if(!unavailability[ei])unavailability[ei]=[];
+  const idx=unavailability[ei].indexOf(di);
+  if(idx>=0){unavailability[ei].splice(idx,1);btn.classList.remove('active');}
+  else{unavailability[ei].push(di);btn.classList.add('active');}
+  // Mettre à jour l'affichage du résumé
+  const cur=unavailability[ei];
+  const parent=btn.closest('#indispo-editor');if(!parent)return;
+  const strong=parent.querySelector('strong');
+  if(strong)strong.textContent=cur.length===0?'aucun':cur.map(d=>DAYS[d]).join(', ');
+}
+
+function saveIndispos(){
+  let changed=0;
+  EMPLOYEES.forEach((_,ei)=>{
+    (unavailability[ei]||[]).forEach(di=>{
+      if(grid[ei]&&grid[ei][di]&&!grid[ei][di].locked&&grid[ei][di].shift!=='REPOS'){grid[ei][di].shift='REPOS';changed++;}
+    });
+  });
+  syncSelects();recalc();save();
+  toast(changed>0?`✓ Indisponibilités enregistrées — ${changed} créneau(x) remis en REPOS.`:'✓ Indisponibilités enregistrées.','ok');
+}
+
+// ════════════════════════════════════════
+//  MODALES
+// ════════════════════════════════════════
+function openModal(id){const el=document.getElementById(id);if(!el)return;el.classList.add('open');if(id==='modal-check')renderManagerReport();}
+function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+function closeModalOnBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+
+// ════════════════════════════════════════
+//  ACTIONS GLOBALES (INCHANGÉES)
 // ════════════════════════════════════════
 function runGenerate(){
-  const ov=document.getElementById('gen-overlay');
-  ov.classList.add('active');
+  const ov=document.getElementById('gen-overlay');ov.classList.add('active');
   setTimeout(()=>{
     logs=[];
     try{
-      initGrid();
-      applyFixed();
-      assignAll();
-      const viols=optimize();
-      syncSelects();
-      recalc();
-      save();
-      const t=grandTotal();
-      toast(viols.length===0
-        ?`✓ Planning généré — ${t.toFixed(1)}h — tout OK !`
-        :`Planning généré — ${t.toFixed(1)}h — ${viols.length} avertissement(s).`
-      );
+      initGrid();applyFixed();assignAll();const viols=optimize();
+      syncSelects();recalc();save();const t=grandTotal();
+      toast(viols.length===0?`✓ Planning généré — ${t.toFixed(1)}h — tout OK !`:`Planning généré — ${t.toFixed(1)}h — ${viols.length} avertissement(s).`,viols.length===0?'ok':'');
       viols.forEach(v=>log('⚠ '+v,'warn'));
-    }catch(e){
-      log('Erreur : '+e.message,'danger');
-      toast('⚠ Erreur : '+e.message);
-    }
-    ov.classList.remove('active');
-    renderLogs();
+    }catch(e){log('Erreur : '+e.message,'danger');toast('⚠ Erreur : '+e.message,'err');}
+    ov.classList.remove('active');renderLogs();
   },80);
 }
 
 function resetPlanning(){
-  if(!confirm('Réinitialiser le planning ? Les modifications manuelles seront perdues.')) return;
-  logs=[];
-  initGrid();
-  applyFixed();
-  syncSelects();
-  recalc();
-  save();
-  log('Planning réinitialisé.');
-  renderLogs();
-  toast('Planning réinitialisé.');
+  if(!confirm('Réinitialiser le planning ? Les modifications manuelles seront perdues.'))return;
+  logs=[];initGrid();applyFixed();syncSelects();recalc();save();log('Planning réinitialisé.');renderLogs();toast('Planning réinitialisé.');
 }
 
 function toggleUnlock(){
-  fixesUnlocked=!fixesUnlocked;
-  const FS=buildFixed();
-  for(const [ei,days] of Object.entries(FS)){
-    for(const di of Object.keys(days).map(Number)){
-      if(grid[ei]&&grid[ei][di]) grid[ei][di].locked=!fixesUnlocked;
-    }
-  }
-  document.getElementById('mi-lock-icon').textContent  = fixesUnlocked?'🔒':'🔓';
-  document.getElementById('mi-lock-label').textContent = fixesUnlocked?'Reverrouiller fixes':'Débloquer horaires fixes';
-  syncSelects();
-  log(fixesUnlocked?'Fixes déverrouillés.':'Fixes reverrouillés.', fixesUnlocked?'warn':'ok');
-  renderLogs();
+  fixesUnlocked=!fixesUnlocked;const FS=buildFixed();
+  for(const[ei,days]of Object.entries(FS)){for(const di of Object.keys(days).map(Number)){if(grid[ei]&&grid[ei][di])grid[ei][di].locked=!fixesUnlocked;}}
+  document.getElementById('mi-lock-icon').textContent=fixesUnlocked?'🔒':'🔓';
+  document.getElementById('mi-lock-label').textContent=fixesUnlocked?'Reverrouiller fixes':'Débloquer horaires fixes';
+  syncSelects();log(fixesUnlocked?'Fixes déverrouillés.':'Fixes reverrouillés.',fixesUnlocked?'warn':'ok');renderLogs();
   toast(fixesUnlocked?'⚠ Horaires fixes déverrouillés.':'Horaires fixes reverrouillés.');
 }
 
 function exportCSV(){
-  let csv='\uFEFF'; // BOM UTF-8
-  csv+='Employé,'+DAYS.join(',')+',Total heures\n';
-  EMPLOYEES.forEach((emp,ei)=>{
-    csv+=[emp.name,...DAYS.map((_,di)=>safeShift(ei,di)),empH(ei).toFixed(1)+'h'].map(c=>`"${c}"`).join(',')+'\n';
-  });
+  let csv='\uFEFF';csv+='Employé,'+DAYS.join(',')+',Total heures\n';
+  EMPLOYEES.forEach((emp,ei)=>{csv+=[emp.name,...DAYS.map((_,di)=>safeShift(ei,di)),empH(ei).toFixed(1)+'h'].map(c=>`"${c}"`).join(',')+'\n';});
   csv+='"TOTAL",'+DAYS.map((_,di)=>'"'+EMPLOYEES.reduce((s,_,ei)=>s+shiftH(safeShift(ei,di)),0).toFixed(1)+'h"').join(',')+`,"${grandTotal().toFixed(1)}h"\n`;
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-  a.download='planning_rh.csv';
-  a.click();
-  toast('Export CSV téléchargé.');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='planning_rh.csv';a.click();toast('Export CSV téléchargé.');
 }
 
 // ════════════════════════════════════════
-//  PERSISTANCE localStorage
+//  PERSISTANCE localStorage — [AMÉLIORÉE]
 // ════════════════════════════════════════
-const LS_EMP    = 'rh3_employees';
-const LS_GRID   = 'rh3_grid';
-const LS_SHIFTS = 'rh3_shifts';
-const LS_ORDER  = 'rh3_order';
+const LS_EMP='rh3_employees',LS_GRID='rh3_grid',LS_SHIFTS='rh3_shifts',LS_ORDER='rh3_order';
+const LS_UNAVAIL='rh3_unavail'; // [NOUVEAU]
+const LS_NEEDS='rh3_dayneeds'; // [NOUVEAU]
 
 function save(){
   try{
-    localStorage.setItem(LS_EMP,    JSON.stringify(EMPLOYEES));
-    localStorage.setItem(LS_GRID,   JSON.stringify(grid));
-    localStorage.setItem(LS_SHIFTS, JSON.stringify(SHIFTS));
-    localStorage.setItem(LS_ORDER,  JSON.stringify(SHIFT_ORDER));
+    localStorage.setItem(LS_EMP,JSON.stringify(EMPLOYEES));
+    localStorage.setItem(LS_GRID,JSON.stringify(grid));
+    localStorage.setItem(LS_SHIFTS,JSON.stringify(SHIFTS));
+    localStorage.setItem(LS_ORDER,JSON.stringify(SHIFT_ORDER));
+    localStorage.setItem(LS_UNAVAIL,JSON.stringify(unavailability)); // [NOUVEAU]
+    localStorage.setItem(LS_NEEDS,JSON.stringify(dayNeeds)); // [NOUVEAU]
   }catch(e){}
 }
 
 function loadFromStorage(){
   try{
-    const e=localStorage.getItem(LS_EMP);
-    const g=localStorage.getItem(LS_GRID);
-    const s=localStorage.getItem(LS_SHIFTS);
-    const o=localStorage.getItem(LS_ORDER);
+    const e=localStorage.getItem(LS_EMP);const g=localStorage.getItem(LS_GRID);
+    const s=localStorage.getItem(LS_SHIFTS);const o=localStorage.getItem(LS_ORDER);
+    const u=localStorage.getItem(LS_UNAVAIL);const n=localStorage.getItem(LS_NEEDS);
     let ok=false;
-    if(e){ const p=JSON.parse(e); if(Array.isArray(p)&&p.length>0){EMPLOYEES=p;ok=true;} }
-    if(s){ const p=JSON.parse(s); if(p&&typeof p==='object') SHIFTS=p; }
-    if(o){ const p=JSON.parse(o); if(Array.isArray(p)) SHIFT_ORDER=p; }
+    if(e){const p=JSON.parse(e);if(Array.isArray(p)&&p.length>0){EMPLOYEES=p;ok=true;}}
+    if(s){const p=JSON.parse(s);if(p&&typeof p==='object')SHIFTS=p;}
+    if(o){const p=JSON.parse(o);if(Array.isArray(p))SHIFT_ORDER=p;}
+    if(u){const p=JSON.parse(u);if(p&&typeof p==='object')unavailability=p;} // [NOUVEAU]
+    if(n){const p=JSON.parse(n);if(Array.isArray(p))dayNeeds=p;} // [NOUVEAU]
     if(g&&ok){
       const pg=JSON.parse(g);
       if(Array.isArray(pg)&&pg.length===EMPLOYEES.length){
         grid=pg;
-        // Sécurité : corriger les créneaux supprimés
-        EMPLOYEES.forEach((_,ei)=>DAYS.forEach((__,di)=>{
-          if(grid[ei]&&grid[ei][di]&&!SHIFTS[grid[ei][di].shift]) grid[ei][di].shift='REPOS';
-        }));
-        applyFixed();
-        return true;
+        EMPLOYEES.forEach((_,ei)=>DAYS.forEach((__,di)=>{if(grid[ei]&&grid[ei][di]&&!SHIFTS[grid[ei][di].shift])grid[ei][di].shift='REPOS';}));
+        applyFixed();return true;
       }
     }
   }catch(e){}
@@ -1659,28 +1430,28 @@ function loadFromStorage(){
 // ════════════════════════════════════════
 //  UTILITAIRES
 // ════════════════════════════════════════
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 let _tt;
-function toast(msg){
-  const el=document.getElementById('toast'); if(!el) return;
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),3500);
+function toast(msg,type=''){
+  const el=document.getElementById('toast');if(!el)return;
+  el.textContent=msg;el.className='toast show';
+  if(type==='ok')el.classList.add('toast-ok');if(type==='err')el.classList.add('toast-err');
+  clearTimeout(_tt);_tt=setTimeout(()=>{el.className='toast';},3500);
 }
-
-// Fermer menu si clic en dehors
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeMenu();closeSidebar();} });
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();closeSidebar();closeModal('modal-check');}});
 
 // ════════════════════════════════════════
 //  INITIALISATION
 // ════════════════════════════════════════
 (function init(){
-  initGrid();
-  applyFixed();
-  const loaded=loadFromStorage();
+  initGrid();applyFixed();
+  initUnavailability(); // [NOUVEAU]
+  loadFromStorage();
+  initUnavailability(); // [NOUVEAU] S'assurer que les nouveaux employés ont des indispos vides
   buildTable();
   log('Application prête · Dim = matin uniquement · Min '+CFG.MIN_WORKDAYS+'j/sem.');
   renderLogs();
+  renderDayNeedsBar(); // [NOUVEAU]
 })();
 </script>
 </body>
